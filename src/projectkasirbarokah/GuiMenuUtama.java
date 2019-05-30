@@ -5,9 +5,12 @@
  */
 package projectkasirbarokah;
 
+import java.awt.event.ItemEvent;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
 import net.proteanit.sql.DbUtils;
@@ -22,14 +25,14 @@ public class GuiMenuUtama extends javax.swing.JFrame {
      * Creates new form GuiMenuUtama
      * @param id_penjaga
      */
+    private ResultSet brngResultSet = new KoneksiOracle().KoneksiOracleDB("SELECT * FROM BARANG ORDER BY id_barang ASC");
+    private ResultSet pnjgResultSet = new KoneksiOracle().KoneksiOracleDB("SELECT * FROM PENJAGA ORDER BY id_penjaga ASC");
     //private int id_penjaga;
     //private static Object obj = new Object();
     public GuiMenuUtama(int id_penjaga) {
         initComponents();
         ResultSet executedQuery = new KoneksiOracle().KoneksiOracleDB("select nama_penjaga from penjaga where id_penjaga=" + id_penjaga);
-        ResultSet brngResultSet = new KoneksiOracle().KoneksiOracleDB("SELECT * FROM BARANG ORDER BY id_barang ASC");
         ResultSet namaBarangResultSet = new KoneksiOracle().KoneksiOracleDB("SELECT nama_barang FROM barang ORDER BY id_barang ASC");
-        ResultSet pnjgResultSet = new KoneksiOracle().KoneksiOracleDB("SELECT * FROM PENJAGA ORDER BY id_penjaga ASC");
         jTable1.setEnabled(false);
         try{
             while(executedQuery.next()){
@@ -87,6 +90,9 @@ public class GuiMenuUtama extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         jSeparator1 = new javax.swing.JSeparator();
         jComboBox1 = new javax.swing.JComboBox<>();
+        jLabel4 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
@@ -111,23 +117,39 @@ public class GuiMenuUtama extends javax.swing.JFrame {
 
             },
             new String [] {
-                "ID Barang", "Nama Barang", "Harga"
+                "ID Barang", "Nama Barang", "Jumlah", "Harga"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.Integer.class
+                java.lang.Integer.class, java.lang.String.class, java.lang.Integer.class, java.lang.Integer.class
             };
 
             public Class getColumnClass(int columnIndex) {
                 return types [columnIndex];
             }
         });
+        jTable3.setColumnSelectionAllowed(true);
+        jTable3.getTableHeader().setReorderingAllowed(false);
         jScrollPane3.setViewportView(jTable3);
+        jTable3.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 
         jLabel3.setText("Nama Barang");
 
         jComboBox1.setEditable(true);
+        jComboBox1.setFont(jComboBox1.getFont().deriveFont(jComboBox1.getFont().getStyle() & ~java.awt.Font.BOLD, jComboBox1.getFont().getSize()+6));
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jComboBox1.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                jComboBox1ItemStateChanged(evt);
+            }
+        });
+
+        jLabel4.setText("Harga");
+
+        jLabel5.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        jLabel5.setText("Rp.");
+
+        jLabel6.setText("Jumlah");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -141,8 +163,15 @@ public class GuiMenuUtama extends javax.swing.JFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel1)
-                            .addComponent(jLabel3)
-                            .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel3)
+                                .addGap(132, 132, 132)
+                                .addComponent(jLabel4))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(70, 70, 70)
+                                .addComponent(jLabel5))
+                            .addComponent(jLabel6))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -156,10 +185,16 @@ public class GuiMenuUtama extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 6, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel3)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3)
+                    .addComponent(jLabel4))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(143, Short.MAX_VALUE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel5)
+                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addComponent(jLabel6)
+                .addContainerGap(115, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Kasir Utama", jPanel1);
@@ -315,12 +350,20 @@ public class GuiMenuUtama extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     public void updateTableBarang(){
-        ResultSet brngResultSet = new KoneksiOracle().KoneksiOracleDB("SELECT * FROM BARANG ORDER BY id_barang ASC");
+        try {
+            brngResultSet.first();
+        } catch (SQLException ex) {
+            Logger.getLogger(GuiMenuUtama.class.getName()).log(Level.SEVERE, null, ex);
+        }
         jTable1.setModel(DbUtils.resultSetToTableModel(brngResultSet));
     }
     
     public void updateTablePenjaga(){
-        ResultSet pnjgResultSet = new KoneksiOracle().KoneksiOracleDB("SELECT * FROM PENJAGA ORDER BY id_penjaga ASC");
+        try {
+            brngResultSet.first();
+        } catch (SQLException ex) {
+            Logger.getLogger(GuiMenuUtama.class.getName()).log(Level.SEVERE, null, ex);
+        }
         jTable2.setModel(DbUtils.resultSetToTableModel(pnjgResultSet));
     }
     
@@ -348,6 +391,28 @@ public class GuiMenuUtama extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton6ActionPerformed
 
+    private void jComboBox1ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBox1ItemStateChanged
+        // TODO add your handling code here:
+        if(evt.getStateChange() == ItemEvent.SELECTED){
+            int id_barang = jComboBox1.getSelectedIndex();
+            System.out.println("id_barang : " + id_barang);
+            String lblhrString = "";
+            try{
+                while(brngResultSet.next()){
+                    if(id_barang+1 == brngResultSet.getInt(1)){
+                        System.out.println("found it!");
+                        lblhrString = brngResultSet.getString(3);
+                    }
+                }
+                brngResultSet.beforeFirst();
+            } catch (SQLException e){
+                System.out.println("Error: "+e.getMessage());
+            }
+            jLabel5.setText("Rp." + lblhrString);   
+        }
+    }//GEN-LAST:event_jComboBox1ItemStateChanged
+
+    
     /**
      * @param id_penjaga
      */
@@ -377,6 +442,9 @@ public class GuiMenuUtama extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;

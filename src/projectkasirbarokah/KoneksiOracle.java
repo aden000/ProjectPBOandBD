@@ -16,7 +16,7 @@ public class KoneksiOracle {
     public ResultSet KoneksiOracleDB(String sql){
         try{
             Connection conn = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:XE", "projectbufar", "06740");
-            PreparedStatement a = conn.prepareStatement(sql);
+            PreparedStatement a = conn.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
             return a.executeQuery();
         } catch (SQLException e){
             JOptionPane.showMessageDialog(null, "Error while processing SQL: " + e.getMessage());
@@ -26,7 +26,7 @@ public class KoneksiOracle {
     public ResultSet KoneksiOracleDBDenganIsi(String sql, String[] isinya){
         try{
             Connection conn = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:XE", "projectbufar", "06740");
-            PreparedStatement a = conn.prepareStatement(sql);
+            PreparedStatement a = conn.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
             for (int i = 0; i <= isinya.length-1; i++){
                 a.setString(i+1, isinya[i]);
             }

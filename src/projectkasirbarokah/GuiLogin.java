@@ -5,11 +5,7 @@
  */
 package projectkasirbarokah;
 
-import java.awt.HeadlessException;
-import java.sql.CallableStatement;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
+import java.awt.event.KeyEvent;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
@@ -25,6 +21,7 @@ public class GuiLogin extends javax.swing.JFrame {
      */
     public GuiLogin() {
         initComponents();
+        jTextField1.requestFocus();
     }
 
     /**
@@ -48,6 +45,12 @@ public class GuiLogin extends javax.swing.JFrame {
         setLocationByPlatform(true);
         setResizable(false);
 
+        jTabbedPane1.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                none(evt);
+            }
+        });
+
         jLabel1.setText("User:");
 
         jLabel2.setText("Password:");
@@ -64,6 +67,11 @@ public class GuiLogin extends javax.swing.JFrame {
         jPasswordField1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jPasswordField1ActionPerformed(evt);
+            }
+        });
+        jPasswordField1.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                jPasswordField1KeyPressed(evt);
             }
         });
 
@@ -164,8 +172,19 @@ public class GuiLogin extends javax.swing.JFrame {
         
     }//GEN-LAST:event_jPasswordField1ActionPerformed
 
-    /**
-     * @param args the command line arguments
+    private void none(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_none
+        // TODO add your handling code here:
+        
+    }//GEN-LAST:event_none
+
+    private void jPasswordField1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jPasswordField1KeyPressed
+        // TODO add your handling code here:
+        if(evt.getKeyCode() == KeyEvent.VK_ENTER){
+            jButton1.doClick();
+        }
+    }//GEN-LAST:event_jPasswordField1KeyPressed
+
+    /**rguments
      */
     public void ini() {
         /* Set the Nimbus look and feel */
