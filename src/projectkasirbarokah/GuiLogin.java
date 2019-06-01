@@ -9,6 +9,7 @@ import java.awt.event.KeyEvent;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
+import javax.swing.UIManager;
 
 /**
  *
@@ -188,7 +189,11 @@ public class GuiLogin extends javax.swing.JFrame {
      */
     public void ini() {
         /* Set the Nimbus look and feel */
-       
+        try{
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception e){
+            e.printStackTrace();
+        }
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(() -> {
             new GuiLogin().setVisible(true);

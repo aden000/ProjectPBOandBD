@@ -20,9 +20,17 @@ public class KoneksiOracle {
             return a.executeQuery();
         } catch (SQLException e){
             JOptionPane.showMessageDialog(null, "Error while processing SQL: " + e.getMessage());
+            
         }
         return null;
     }
+
+    /**
+     *
+     * @param sql - ISI QUERY SQL + dengan PREPARED STATEMENT DENGAN FIELD YANG BISA DI PASANG ? ? ? ? ?
+     * @param isinya - ISI ARRAYED STRING, BIASANYA DIBERIKAN PADA PREPARED STATEMENT sebanyak Simbol tanda tanya yg diperlukan
+     * @return - BENTUK RETURN VALUE BERUPA RESULTSET, ANDA MUNGKIN DIMINTA UNTUK TRY CATCH UNTUK STATEMENT INI
+     */
     public ResultSet KoneksiOracleDBDenganIsi(String sql, String[] isinya){
         try{
             Connection conn = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:XE", "projectbufar", "06740");

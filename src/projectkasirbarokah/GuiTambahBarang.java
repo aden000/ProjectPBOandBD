@@ -8,6 +8,7 @@ package projectkasirbarokah;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
+import javax.swing.UIManager;
 
 /**
  *
@@ -150,6 +151,11 @@ public class GuiTambahBarang extends javax.swing.JFrame {
     public void showTambahBarang(GuiMenuUtama a) {
         /* Set the Nimbus look and feel */
         //this.yolo = a;
+        try{
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception e){
+            e.printStackTrace();
+        }
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(() -> {
             new GuiTambahBarang(a).setVisible(true);

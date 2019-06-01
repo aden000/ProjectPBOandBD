@@ -8,6 +8,7 @@ package projectkasirbarokah;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
+import javax.swing.UIManager;
 //import projectkasirbarokah
 
 /**
@@ -158,6 +159,11 @@ public class GuiTambahPegawai extends javax.swing.JFrame {
     public void showTambahPegawai(GuiMenuUtama yolo) {
         /* Set the Nimbus look and feel */
         //this.yolo = yolo;
+        try{
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception e){
+            e.printStackTrace();
+        }
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {

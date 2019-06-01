@@ -13,6 +13,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
+import javax.swing.UIManager;
 import net.proteanit.sql.DbUtils;
 
 /**
@@ -70,6 +71,15 @@ public class GuiMenuUtama extends javax.swing.JFrame {
             jTabbedPane1.setEnabledAt(2, false);
             setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         }
+        /*try{
+            brngResultSet.close();
+            pnjgResultSet.close();
+            executedQuery.close();
+            namaBarangResultSet.close();
+        }catch (SQLException e){
+            System.err.println("Error: "+e.getMessage());
+        }*/
+        
     }
 
     /**
@@ -109,6 +119,7 @@ public class GuiMenuUtama extends javax.swing.JFrame {
         jButton3.setText("jButton3");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setBackground(new java.awt.Color(102, 102, 102));
 
         jLabel1.setText("Tanggal Operasi:");
 
@@ -189,9 +200,9 @@ public class GuiMenuUtama extends javax.swing.JFrame {
                     .addComponent(jLabel3)
                     .addComponent(jLabel4))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel5)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel5))
                 .addGap(18, 18, 18)
                 .addComponent(jLabel6)
                 .addContainerGap(115, Short.MAX_VALUE))
@@ -222,6 +233,11 @@ public class GuiMenuUtama extends javax.swing.JFrame {
 
         jButton4.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jButton4.setText("Ubah Barang");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -311,7 +327,7 @@ public class GuiMenuUtama extends javax.swing.JFrame {
         jTabbedPane1.addTab("Olah Data Penjaga", jPanel3);
 
         jLabel2.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jLabel2.setText("Penjaga: ");
+        jLabel2.setText("Penjaga:");
 
         jButton1.setText("Log out");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -349,9 +365,19 @@ public class GuiMenuUtama extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    public void updateTableBarang(ResultSet brngResultSet){
+        this.brngResultSet = brngResultSet;
+        try {
+            //brngResultSet.updateRow();
+            brngResultSet.beforeFirst();
+        } catch (SQLException ex) {
+            Logger.getLogger(GuiMenuUtama.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        jTable1.setModel(DbUtils.resultSetToTableModel(brngResultSet));
+    }
     public void updateTableBarang(){
         try {
-            brngResultSet.first();
+            brngResultSet.beforeFirst();
         } catch (SQLException ex) {
             Logger.getLogger(GuiMenuUtama.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -359,11 +385,12 @@ public class GuiMenuUtama extends javax.swing.JFrame {
     }
     
     public void updateTablePenjaga(){
-        try {
-            brngResultSet.first();
+        /*try {
+            //pnjgResultSet.updateRow();
+            pnjgResultSet.beforeFirst();
         } catch (SQLException ex) {
             Logger.getLogger(GuiMenuUtama.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        }*/
         jTable2.setModel(DbUtils.resultSetToTableModel(pnjgResultSet));
     }
     
@@ -412,6 +439,12 @@ public class GuiMenuUtama extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jComboBox1ItemStateChanged
 
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        // TODO add your handling code here:
+        GuiUpdateBarang gub = new GuiUpdateBarang(this, brngResultSet);
+        gub.showUpdateBarang(this, brngResultSet);
+    }//GEN-LAST:event_jButton4ActionPerformed
+
     
     /**
      * @param id_penjaga
@@ -419,10 +452,11 @@ public class GuiMenuUtama extends javax.swing.JFrame {
     public void MenuUtama(int id_penjaga) {
         /* Set the Nimbus look and feel */
         System.out.println("Accessed : " + id_penjaga);
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
+        try{
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception e){
+            e.printStackTrace();
+        }
         
         /* Create and display the form */
 
