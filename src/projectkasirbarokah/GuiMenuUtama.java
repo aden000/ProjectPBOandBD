@@ -5,6 +5,7 @@
  */
 package projectkasirbarokah;
 
+import java.awt.Toolkit;
 import java.awt.event.ItemEvent;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -16,7 +17,8 @@ import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
-import javax.swing.table.TableColumnModel;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableModel;
 import net.proteanit.sql.DbUtils;
 
 /**
@@ -31,16 +33,15 @@ public class GuiMenuUtama extends javax.swing.JFrame {
      */
     private ResultSet brngResultSet = new KoneksiOracle().KoneksiOracleDB("SELECT * FROM BARANG ORDER BY id_barang ASC");
     private ResultSet pnjgResultSet = new KoneksiOracle().KoneksiOracleDB("SELECT * FROM PENJAGA ORDER BY id_penjaga ASC");
-    private Map hidden;
-    private TableColumnModel tcm;
+    private TableColumn tc;
     //private int id_penjaga;
     //private static Object obj = new Object();
     public GuiMenuUtama(int id_penjaga) {
         initComponents();
-        hidden = new HashMap();
         ResultSet executedQuery = new KoneksiOracle().KoneksiOracleDB("select nama_penjaga from penjaga where id_penjaga=" + id_penjaga);
         ResultSet namaBarangResultSet = new KoneksiOracle().KoneksiOracleDB("SELECT nama_barang FROM barang ORDER BY id_barang ASC");
         jTable1.setEnabled(false);
+        jTable2.setEnabled(false);
         try{
             while(executedQuery.next()){
                 System.out.println("String: " + executedQuery.getString(1));
@@ -55,8 +56,17 @@ public class GuiMenuUtama extends javax.swing.JFrame {
             jTabbedPane1.setSelectedIndex(1);
             jTable1.setModel(DbUtils.resultSetToTableModel(brngResultSet));
             jTable2.setModel(DbUtils.resultSetToTableModel(pnjgResultSet));
-            jCheckBox1.setEnabled(true);
-            
+            jTable1.setEnabled(false);
+            jTable2.setEnabled(false);
+            jTable1.setDragEnabled(false);
+            jTable2.setDragEnabled(false);
+            try {
+                pnjgResultSet.beforeFirst();
+            } catch (SQLException ex) {
+                Logger.getLogger(GuiMenuUtama.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            tc = jTable2.getColumnModel().getColumn(jTable2.getColumnCount()-1);
+            jTable2.removeColumn(jTable2.getColumnModel().getColumn(jTable2.getColumnCount()-1));
             
             setDefaultCloseOperation(EXIT_ON_CLOSE);
         } else {
@@ -110,11 +120,17 @@ public class GuiMenuUtama extends javax.swing.JFrame {
         jScrollPane3 = new javax.swing.JScrollPane();
         jTable3 = new javax.swing.JTable();
         jLabel3 = new javax.swing.JLabel();
-        jSeparator1 = new javax.swing.JSeparator();
         jComboBox1 = new javax.swing.JComboBox<>();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
+        jTextField1 = new javax.swing.JTextField();
+        jLabel7 = new javax.swing.JLabel();
+        jLabel8 = new javax.swing.JLabel();
+        jPanel5 = new javax.swing.JPanel();
+        jButton7 = new javax.swing.JButton();
+        jButton8 = new javax.swing.JButton();
+        jButton9 = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
@@ -168,18 +184,57 @@ public class GuiMenuUtama extends javax.swing.JFrame {
             }
         });
 
-        jLabel4.setText("Harga");
+        jLabel4.setText("Harga Satuan");
 
         jLabel5.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         jLabel5.setText("Rp.");
 
         jLabel6.setText("Jumlah");
 
+        jTextField1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+
+        jLabel7.setText("Harga Total");
+
+        jLabel8.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        jLabel8.setText("Rp.");
+
+        jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder("Action"));
+
+        jButton7.setText("Tambahkan ke Keranjang");
+
+        jButton8.setText("Hapus baris terpilih");
+
+        jButton9.setBackground(new java.awt.Color(255, 102, 51));
+        jButton9.setText("Bayar");
+
+        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
+        jPanel5.setLayout(jPanel5Layout);
+        jPanel5Layout.setHorizontalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jButton9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jButton8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jButton7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        jPanel5Layout.setVerticalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jButton7, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton8, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton9, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jSeparator1)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -188,15 +243,21 @@ public class GuiMenuUtama extends javax.swing.JFrame {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel1)
                             .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel6)
+                                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(70, 70, 70)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel7)
+                                    .addComponent(jLabel8)
+                                    .addComponent(jLabel5)))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jLabel3)
                                 .addGap(132, 132, 132)
                                 .addComponent(jLabel4))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(70, 70, 70)
-                                .addComponent(jLabel5))
-                            .addComponent(jLabel6))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                            .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(102, 102, 102)
+                        .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -206,19 +267,26 @@ public class GuiMenuUtama extends javax.swing.JFrame {
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 232, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 6, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(jLabel4))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel5))
-                .addGap(18, 18, 18)
-                .addComponent(jLabel6)
-                .addContainerGap(115, Short.MAX_VALUE))
+                .addGap(23, 23, 23)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel3)
+                            .addComponent(jLabel4))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel5))
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel6)
+                            .addComponent(jLabel7))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel8)))
+                    .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(20, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Kasir Utama", jPanel1);
@@ -292,6 +360,7 @@ public class GuiMenuUtama extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        jTable2.getTableHeader().setReorderingAllowed(false);
         jScrollPane2.setViewportView(jTable2);
 
         jButton5.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
@@ -311,6 +380,11 @@ public class GuiMenuUtama extends javax.swing.JFrame {
         });
 
         jCheckBox1.setText("Tampilkan Password");
+        jCheckBox1.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                jCheckBox1ItemStateChanged(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -398,6 +472,9 @@ public class GuiMenuUtama extends javax.swing.JFrame {
         //pnjgResultSet.updateRow();
         pnjgResultSet = new KoneksiOracle().KoneksiOracleDB("SELECT * FROM PENJAGA ORDER BY ID_PENJAGA ASC");
         jTable2.setModel(DbUtils.resultSetToTableModel(pnjgResultSet));
+        if(jCheckBox1.isSelected() == false){
+            jTable2.removeColumn(jTable2.getColumnModel().getColumn(jTable2.getColumnCount()-1));
+        }
         try {
             pnjgResultSet.close();
         } catch (SQLException ex) {
@@ -447,7 +524,15 @@ public class GuiMenuUtama extends javax.swing.JFrame {
             } catch (SQLException e){
                 System.out.println("Error: "+e.getMessage());
             }
-            jLabel5.setText("Rp." + lblhrString); 
+            jLabel5.setText("Rp."+lblhrString);
+            try{
+                int jml = Integer.valueOf(jTextField1.getText());
+                jLabel8.setText("Rp." + (jml * Integer.valueOf(lblhrString))); 
+            } catch (NumberFormatException e){
+                //jTextField1.setText("");
+                Toolkit.getDefaultToolkit().beep();
+            }
+            
             
         }
     }//GEN-LAST:event_jComboBox1ItemStateChanged
@@ -457,6 +542,15 @@ public class GuiMenuUtama extends javax.swing.JFrame {
         GuiUpdateBarang gub = new GuiUpdateBarang(this);
         gub.showUpdateBarang(this);
     }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void jCheckBox1ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jCheckBox1ItemStateChanged
+        // TODO add your handling code here:
+        if(evt.getStateChange() == ItemEvent.SELECTED){
+            jTable2.addColumn(tc);
+        } else {
+            jTable2.removeColumn(jTable2.getColumnModel().getColumn(jTable2.getColumnCount()-1));
+        }
+    }//GEN-LAST:event_jCheckBox1ItemStateChanged
 
     
     /**
@@ -488,6 +582,9 @@ public class GuiMenuUtama extends javax.swing.JFrame {
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
+    private javax.swing.JButton jButton7;
+    private javax.swing.JButton jButton8;
+    private javax.swing.JButton jButton9;
     private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
@@ -496,16 +593,19 @@ public class GuiMenuUtama extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel5;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTable jTable1;
     private javax.swing.JTable jTable2;
     private javax.swing.JTable jTable3;
+    private javax.swing.JTextField jTextField1;
     // End of variables declaration//GEN-END:variables
 }
