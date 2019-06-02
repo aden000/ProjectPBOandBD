@@ -132,7 +132,7 @@ public class GuiTambahBarang extends javax.swing.JFrame {
             jTextField2.getText()
         };
         int id_barang = 0;
-        ResultSet rsgid = new KoneksiOracle().KoneksiOracleDB("Select id_barang from barang");
+        ResultSet rsgid = new KoneksiOracle().KoneksiOracleDB("Select * from barang order by id_barang asc");
         try{
             while(rsgid.next()){
                 id_barang = rsgid.getInt(1);

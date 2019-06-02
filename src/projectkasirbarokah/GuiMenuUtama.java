@@ -9,11 +9,14 @@ import java.awt.event.ItemEvent;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
+import javax.swing.table.TableColumnModel;
 import net.proteanit.sql.DbUtils;
 
 /**
@@ -28,10 +31,13 @@ public class GuiMenuUtama extends javax.swing.JFrame {
      */
     private ResultSet brngResultSet = new KoneksiOracle().KoneksiOracleDB("SELECT * FROM BARANG ORDER BY id_barang ASC");
     private ResultSet pnjgResultSet = new KoneksiOracle().KoneksiOracleDB("SELECT * FROM PENJAGA ORDER BY id_penjaga ASC");
+    private Map hidden;
+    private TableColumnModel tcm;
     //private int id_penjaga;
     //private static Object obj = new Object();
     public GuiMenuUtama(int id_penjaga) {
         initComponents();
+        hidden = new HashMap();
         ResultSet executedQuery = new KoneksiOracle().KoneksiOracleDB("select nama_penjaga from penjaga where id_penjaga=" + id_penjaga);
         ResultSet namaBarangResultSet = new KoneksiOracle().KoneksiOracleDB("SELECT nama_barang FROM barang ORDER BY id_barang ASC");
         jTable1.setEnabled(false);
@@ -49,9 +55,12 @@ public class GuiMenuUtama extends javax.swing.JFrame {
             jTabbedPane1.setSelectedIndex(1);
             jTable1.setModel(DbUtils.resultSetToTableModel(brngResultSet));
             jTable2.setModel(DbUtils.resultSetToTableModel(pnjgResultSet));
+            jCheckBox1.setEnabled(true);
+            
+            
             setDefaultCloseOperation(EXIT_ON_CLOSE);
         } else {
-            jLabel1.setText(jLabel1.getText() + " " + java.time.LocalDate.now());
+            jLabel1.setText(jLabel1.getText() + " " + java.time.LocalDateTime.now());
             ArrayList<String> ars = new ArrayList();
             try{
                 while(namaBarangResultSet.next()){
@@ -71,14 +80,14 @@ public class GuiMenuUtama extends javax.swing.JFrame {
             jTabbedPane1.setEnabledAt(2, false);
             setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         }
-        /*try{
+        try{
             brngResultSet.close();
             pnjgResultSet.close();
             executedQuery.close();
             namaBarangResultSet.close();
         }catch (SQLException e){
             System.err.println("Error: "+e.getMessage());
-        }*/
+        }
         
     }
 
@@ -92,6 +101,9 @@ public class GuiMenuUtama extends javax.swing.JFrame {
     private void initComponents() {
 
         jButton3 = new javax.swing.JButton();
+        entityManager = java.beans.Beans.isDesignTime() ? null : javax.persistence.Persistence.createEntityManagerFactory("jdbc:oracle:thin:@localhost:1521:XEPU").createEntityManager();
+        barang_1Query = java.beans.Beans.isDesignTime() ? null : entityManager.createQuery("SELECT b FROM Barang_1 b");
+        barang_1List = java.beans.Beans.isDesignTime() ? java.util.Collections.emptyList() : barang_1Query.getResultList();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
@@ -113,6 +125,7 @@ public class GuiMenuUtama extends javax.swing.JFrame {
         jTable2 = new javax.swing.JTable();
         jButton5 = new javax.swing.JButton();
         jButton6 = new javax.swing.JButton();
+        jCheckBox1 = new javax.swing.JCheckBox();
         jLabel2 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
 
@@ -210,17 +223,17 @@ public class GuiMenuUtama extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("Kasir Utama", jPanel1);
 
+        jTable1.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+
             }
         ));
+        jTable1.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        jTable1.getTableHeader().setReorderingAllowed(false);
         jScrollPane1.setViewportView(jTable1);
 
         jButton2.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
@@ -297,6 +310,8 @@ public class GuiMenuUtama extends javax.swing.JFrame {
             }
         });
 
+        jCheckBox1.setText("Tampilkan Password");
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -305,7 +320,8 @@ public class GuiMenuUtama extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 182, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton6, javax.swing.GroupLayout.PREFERRED_SIZE, 182, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jButton6, javax.swing.GroupLayout.PREFERRED_SIZE, 182, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jCheckBox1))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 532, Short.MAX_VALUE)
                 .addContainerGap())
@@ -319,8 +335,10 @@ public class GuiMenuUtama extends javax.swing.JFrame {
                         .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton6, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jCheckBox1)
                         .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jScrollPane2))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 461, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -365,33 +383,26 @@ public class GuiMenuUtama extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    public void updateTableBarang(ResultSet brngResultSet){
-        this.brngResultSet = brngResultSet;
-        try {
-            //brngResultSet.updateRow();
-            brngResultSet.beforeFirst();
-        } catch (SQLException ex) {
-            Logger.getLogger(GuiMenuUtama.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        jTable1.setModel(DbUtils.resultSetToTableModel(brngResultSet));
-    }
     public void updateTableBarang(){
+        //brngResultSet.refreshRow();
+        brngResultSet = new KoneksiOracle().KoneksiOracleDB("SELECT * FROM BARANG ORDER BY ID_BARANG ASC");
+        jTable1.setModel(DbUtils.resultSetToTableModel(brngResultSet));
         try {
-            brngResultSet.beforeFirst();
+            brngResultSet.close();
         } catch (SQLException ex) {
             Logger.getLogger(GuiMenuUtama.class.getName()).log(Level.SEVERE, null, ex);
         }
-        jTable1.setModel(DbUtils.resultSetToTableModel(brngResultSet));
     }
     
     public void updateTablePenjaga(){
-        /*try {
-            //pnjgResultSet.updateRow();
-            pnjgResultSet.beforeFirst();
+        //pnjgResultSet.updateRow();
+        pnjgResultSet = new KoneksiOracle().KoneksiOracleDB("SELECT * FROM PENJAGA ORDER BY ID_PENJAGA ASC");
+        jTable2.setModel(DbUtils.resultSetToTableModel(pnjgResultSet));
+        try {
+            pnjgResultSet.close();
         } catch (SQLException ex) {
             Logger.getLogger(GuiMenuUtama.class.getName()).log(Level.SEVERE, null, ex);
-        }*/
-        jTable2.setModel(DbUtils.resultSetToTableModel(pnjgResultSet));
+        }
     }
     
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
@@ -424,6 +435,7 @@ public class GuiMenuUtama extends javax.swing.JFrame {
             int id_barang = jComboBox1.getSelectedIndex();
             System.out.println("id_barang : " + id_barang);
             String lblhrString = "";
+            brngResultSet = new KoneksiOracle().KoneksiOracleDB("SELECT * FROM BARANG ORDER BY ID_BARANG ASC");
             try{
                 while(brngResultSet.next()){
                     if(id_barang+1 == brngResultSet.getInt(1)){
@@ -431,18 +443,19 @@ public class GuiMenuUtama extends javax.swing.JFrame {
                         lblhrString = brngResultSet.getString(3);
                     }
                 }
-                brngResultSet.beforeFirst();
+                brngResultSet.close();
             } catch (SQLException e){
                 System.out.println("Error: "+e.getMessage());
             }
-            jLabel5.setText("Rp." + lblhrString);   
+            jLabel5.setText("Rp." + lblhrString); 
+            
         }
     }//GEN-LAST:event_jComboBox1ItemStateChanged
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         // TODO add your handling code here:
-        GuiUpdateBarang gub = new GuiUpdateBarang(this, brngResultSet);
-        gub.showUpdateBarang(this, brngResultSet);
+        GuiUpdateBarang gub = new GuiUpdateBarang(this);
+        gub.showUpdateBarang(this);
     }//GEN-LAST:event_jButton4ActionPerformed
 
     
@@ -466,12 +479,16 @@ public class GuiMenuUtama extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private java.util.List<projectkasirbarokah.Barang_1> barang_1List;
+    private javax.persistence.Query barang_1Query;
+    private javax.persistence.EntityManager entityManager;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
+    private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;

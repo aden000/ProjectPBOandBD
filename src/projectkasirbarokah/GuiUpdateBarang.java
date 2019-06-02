@@ -25,10 +25,9 @@ public class GuiUpdateBarang extends javax.swing.JFrame {
      * Creates new form GuiUpdateBarang
      */
     private GuiMenuUtama yolo;
-    private ResultSet brngResultSet;
-    public GuiUpdateBarang(GuiMenuUtama yolo, ResultSet brngResultSet) {
+    private ResultSet brngResultSet = new KoneksiOracle().KoneksiOracleDB("SELECT * FROM BARANG ORDER BY ID_BARANG ASC");
+    public GuiUpdateBarang(GuiMenuUtama yolo) {
         this.yolo = yolo;
-        this.brngResultSet = brngResultSet;
         initComponents();
         jTextField1.setEnabled(false);
         jTextField2.setEnabled(false);
@@ -181,17 +180,21 @@ public class GuiUpdateBarang extends javax.swing.JFrame {
         int pil = JOptionPane.showConfirmDialog(null, "Anda Yakin ingin mengubah? data ini?", "Ubah?", JOptionPane.YES_NO_OPTION);
         if(pil == JOptionPane.YES_OPTION){
             new KoneksiOracle().KoneksiOracleDBDenganIsi("UPDATE barang SET nama_barang = ?, harga_barang = ? WHERE id_barang = " + (jComboBox1.getSelectedIndex()+1), isi);
-            /*try{ 
+            try {
+                /*try{
                 brngResultSet.moveToInsertRow();
                 brngResultSet.absolute(jComboBox1.getSelectedIndex()+1);
                 brngResultSet.updateString(2, isi[0]);
                 brngResultSet.updateInt(3, Integer.valueOf(isi[1]));
                 brngResultSet.updateRow();
-            } catch (SQLException e){
+                } catch (SQLException e){
                 System.err.println("Error: " + e.getMessage());
-            }*/
-            
-            yolo.updateTableBarang(brngResultSet);
+                }*/
+                brngResultSet.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(GuiUpdateBarang.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            yolo.updateTableBarang();
             this.setVisible(false);
         } else if (pil == JOptionPane.NO_OPTION){
             this.setEnabled(true);
@@ -201,7 +204,7 @@ public class GuiUpdateBarang extends javax.swing.JFrame {
     /**
      * @param args the command line arguments
      */
-    public void showUpdateBarang(GuiMenuUtama yolo, ResultSet brngResultSet) {
+    public void showUpdateBarang(GuiMenuUtama yolo) {
         /* Set the Nimbus look and feel */
         try{
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -210,7 +213,7 @@ public class GuiUpdateBarang extends javax.swing.JFrame {
         }
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(() -> {
-            new GuiUpdateBarang(yolo, brngResultSet).setVisible(true);
+            new GuiUpdateBarang(yolo).setVisible(true);
         });
     }
 
