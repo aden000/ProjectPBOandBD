@@ -7,18 +7,17 @@ package projectkasirbarokah;
 
 import java.awt.Toolkit;
 import java.awt.event.ItemEvent;
+import java.awt.event.KeyEvent;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
-import javax.swing.table.TableModel;
 import net.proteanit.sql.DbUtils;
 
 /**
@@ -34,12 +33,21 @@ public class GuiMenuUtama extends javax.swing.JFrame {
     private ResultSet brngResultSet = new KoneksiOracle().KoneksiOracleDB("SELECT * FROM BARANG ORDER BY id_barang ASC");
     private ResultSet pnjgResultSet = new KoneksiOracle().KoneksiOracleDB("SELECT * FROM PENJAGA ORDER BY id_penjaga ASC");
     private TableColumn tc;
+    
+    private DefaultTableModel krjgTableModel;
     //private int id_penjaga;
     //private static Object obj = new Object();
     public GuiMenuUtama(int id_penjaga) {
         initComponents();
         ResultSet executedQuery = new KoneksiOracle().KoneksiOracleDB("select nama_penjaga from penjaga where id_penjaga=" + id_penjaga);
         ResultSet namaBarangResultSet = new KoneksiOracle().KoneksiOracleDB("SELECT nama_barang FROM barang ORDER BY id_barang ASC");
+        krjgTableModel = new DefaultTableModel();
+        krjgTableModel.setColumnIdentifiers(new Object[]{
+            "ID Barang",
+            "Nama Barang",
+            "Jumlah",
+            "Harga Total"
+        });
         jTable1.setEnabled(false);
         jTable2.setEnabled(false);
         try{
@@ -67,10 +75,10 @@ public class GuiMenuUtama extends javax.swing.JFrame {
             }
             tc = jTable2.getColumnModel().getColumn(jTable2.getColumnCount()-1);
             jTable2.removeColumn(jTable2.getColumnModel().getColumn(jTable2.getColumnCount()-1));
-            
             setDefaultCloseOperation(EXIT_ON_CLOSE);
         } else {
             jLabel1.setText(jLabel1.getText() + " " + java.time.LocalDateTime.now());
+            jTextField1.setEditable(false);
             ArrayList<String> ars = new ArrayList();
             try{
                 while(namaBarangResultSet.next()){
@@ -86,8 +94,13 @@ public class GuiMenuUtama extends javax.swing.JFrame {
              * http://www.orbital-computer.de/JComboBox/
              */
             AutoCompletion.enable(jComboBox1);
+            jTable3.setModel(krjgTableModel);
+            jTable3.setColumnSelectionAllowed(false);
+            jTable3.setCellSelectionEnabled(false);
+            jTable3.setRowSelectionAllowed(true);
             jTabbedPane1.setEnabledAt(1, false);
             jTabbedPane1.setEnabledAt(2, false);
+            jButton8.setEnabled(false);
             setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         }
         try{
@@ -170,6 +183,11 @@ public class GuiMenuUtama extends javax.swing.JFrame {
         });
         jTable3.setColumnSelectionAllowed(true);
         jTable3.getTableHeader().setReorderingAllowed(false);
+        jTable3.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTable3MouseClicked(evt);
+            }
+        });
         jScrollPane3.setViewportView(jTable3);
         jTable3.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 
@@ -192,6 +210,11 @@ public class GuiMenuUtama extends javax.swing.JFrame {
         jLabel6.setText("Jumlah");
 
         jTextField1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jTextField1.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                jTextField1KeyPressed(evt);
+            }
+        });
 
         jLabel7.setText("Harga Total");
 
@@ -201,8 +224,18 @@ public class GuiMenuUtama extends javax.swing.JFrame {
         jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder("Action"));
 
         jButton7.setText("Tambahkan ke Keranjang");
+        jButton7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton7ActionPerformed(evt);
+            }
+        });
 
         jButton8.setText("Hapus baris terpilih");
+        jButton8.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton8ActionPerformed(evt);
+            }
+        });
 
         jButton9.setBackground(new java.awt.Color(255, 102, 51));
         jButton9.setText("Bayar");
@@ -216,7 +249,7 @@ public class GuiMenuUtama extends javax.swing.JFrame {
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jButton9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jButton8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jButton7, javax.swing.GroupLayout.DEFAULT_SIZE, 246, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel5Layout.setVerticalGroup(
@@ -243,10 +276,13 @@ public class GuiMenuUtama extends javax.swing.JFrame {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel1)
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel6)
-                                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(70, 70, 70)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addComponent(jLabel6)
+                                        .addGap(163, 163, 163))
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addComponent(jTextField1)
+                                        .addGap(13, 13, 13)))
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel7)
                                     .addComponent(jLabel8)
@@ -255,9 +291,9 @@ public class GuiMenuUtama extends javax.swing.JFrame {
                                 .addComponent(jLabel3)
                                 .addGap(132, 132, 132)
                                 .addComponent(jLabel4))
-                            .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(102, 102, 102)
-                        .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                            .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -509,6 +545,9 @@ public class GuiMenuUtama extends javax.swing.JFrame {
     private void jComboBox1ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBox1ItemStateChanged
         // TODO add your handling code here:
         if(evt.getStateChange() == ItemEvent.SELECTED){
+            if(jTextField1.isEditable()== false){
+                jTextField1.setEditable(true);
+            }
             int id_barang = jComboBox1.getSelectedIndex();
             System.out.println("id_barang : " + id_barang);
             String lblhrString = "";
@@ -526,8 +565,10 @@ public class GuiMenuUtama extends javax.swing.JFrame {
             }
             jLabel5.setText("Rp."+lblhrString);
             try{
-                int jml = Integer.valueOf(jTextField1.getText());
-                jLabel8.setText("Rp." + (jml * Integer.valueOf(lblhrString))); 
+                if(!jTextField1.getText().equals("")){
+                    int jml = Integer.valueOf(jTextField1.getText());
+                    jLabel8.setText("Rp." + (jml * Integer.valueOf(lblhrString))); 
+                } 
             } catch (NumberFormatException e){
                 //jTextField1.setText("");
                 Toolkit.getDefaultToolkit().beep();
@@ -552,6 +593,68 @@ public class GuiMenuUtama extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jCheckBox1ItemStateChanged
 
+    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
+        // TODO add your handling code here:
+        /*try{
+            int jml = Integer.valueOf(jTextField1.getText());
+            if(jComboBox1.isPopupVisible() == true){
+                Toolkit.getDefaultToolkit().beep();
+            } else {
+                DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+                model.addRow(new Object[]{jComboBox1.getSelectedIndex()+1, jComboBox1.getItemAt(jComboBox1.getSelectedIndex()),jml, jLabel8.getText().substring(3)});
+                jTable1.setModel(model);
+            }
+            
+        } catch (NumberFormatException e){
+            Toolkit.getDefaultToolkit();
+        }*/
+        try{
+            Object row[] = new Object[]{
+                jComboBox1.getSelectedIndex()+1,
+                jComboBox1.getSelectedItem(),
+                Integer.valueOf(jTextField1.getText()),
+                jLabel8.getText().substring(3)
+            };
+            krjgTableModel.addRow(row);
+            jComboBox1.setSelectedIndex(0);
+            jTextField1.setText("");
+            jTextField1.setEditable(false);
+            jLabel5.setText("Rp.");
+            jLabel8.setText("Rp.");
+        } catch (NumberFormatException e){
+            JOptionPane.showMessageDialog(null, "Pastikan data di dalam Kolom nama barang dan jumlah barang benar");
+        }
+    }//GEN-LAST:event_jButton7ActionPerformed
+
+    private void jTextField1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField1KeyPressed
+        char evchar = evt.getKeyChar();
+        if(!Character.isDigit(evchar) || evchar == KeyEvent.VK_BACK_SPACE || evchar == KeyEvent.VK_DELETE){
+            Toolkit.getDefaultToolkit().beep();
+            evt.consume();
+            ((javax.swing.JTextField)evt.getSource()).setText("");
+            jLabel8.setText("Rp.");
+        } else {
+            jLabel8.setText("Rp."+ (Integer.valueOf(((javax.swing.JTextField)evt.getSource()).getText() + evchar) * Integer.valueOf(jLabel5.getText().substring(3))));
+        }
+    }//GEN-LAST:event_jTextField1KeyPressed
+
+    private void jTable3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable3MouseClicked
+        // TODO add your handling code here:
+        if(jTable3.isRowSelected(jTable3.getSelectedRow()) == true){
+            jButton8.setEnabled(true);
+        } else {
+            jButton8.setEnabled(false);
+        }
+    }//GEN-LAST:event_jTable3MouseClicked
+
+    private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
+        int check = JOptionPane.showConfirmDialog(null, "Anda yakin untuk menghapus yang dipilih?", "Konfirmasi", JOptionPane.YES_NO_OPTION);
+        if(check == JOptionPane.YES_OPTION){
+            krjgTableModel.removeRow(jTable3.getSelectedRow());
+            jButton8.setEnabled(false);
+        }
+    }//GEN-LAST:event_jButton8ActionPerformed
+    
     
     /**
      * @param id_penjaga
