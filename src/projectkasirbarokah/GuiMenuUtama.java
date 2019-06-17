@@ -75,6 +75,7 @@ public class GuiMenuUtama extends javax.swing.JFrame {
             }
             tc = jTable2.getColumnModel().getColumn(jTable2.getColumnCount()-1);
             jTable2.removeColumn(jTable2.getColumnModel().getColumn(jTable2.getColumnCount()-1));
+            setTitle("Program Utama: Kasir (Barokah) [Administrator Access]");
             setDefaultCloseOperation(EXIT_ON_CLOSE);
         } else {
             jLabel1.setText(jLabel1.getText() + " " + java.time.LocalDateTime.now());
@@ -540,6 +541,8 @@ public class GuiMenuUtama extends javax.swing.JFrame {
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
         // TODO add your handling code here:
+        GuiUpdatePegawai up = new GuiUpdatePegawai(this);
+        up.showUpdatePegawai(this);
     }//GEN-LAST:event_jButton6ActionPerformed
 
     private void jComboBox1ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBox1ItemStateChanged
