@@ -10,6 +10,9 @@ import java.awt.event.ItemEvent;
 import java.awt.event.KeyEvent;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.FieldPosition;
+import java.text.NumberFormat;
+import java.text.ParsePosition;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -18,6 +21,8 @@ import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
+import javax.swing.text.DefaultFormatterFactory;
+import javax.swing.text.NumberFormatter;
 import net.proteanit.sql.DbUtils;
 
 /**
@@ -30,6 +35,7 @@ public class GuiMenuUtama extends javax.swing.JFrame {
      * Creates new form GuiMenuUtama
      * @param id_penjaga
      */
+    private int id_penjaga;
     private ResultSet brngResultSet = new KoneksiOracle().KoneksiOracleDB("SELECT * FROM BARANG ORDER BY id_barang ASC");
     private ResultSet pnjgResultSet = new KoneksiOracle().KoneksiOracleDB("SELECT * FROM PENJAGA ORDER BY id_penjaga ASC");
     private TableColumn tc;
@@ -39,6 +45,7 @@ public class GuiMenuUtama extends javax.swing.JFrame {
     //private static Object obj = new Object();
     public GuiMenuUtama(int id_penjaga) {
         initComponents();
+        this.id_penjaga = id_penjaga;
         ResultSet executedQuery = new KoneksiOracle().KoneksiOracleDB("select nama_penjaga from penjaga where id_penjaga=" + id_penjaga);
         ResultSet namaBarangResultSet = new KoneksiOracle().KoneksiOracleDB("SELECT nama_barang FROM barang ORDER BY id_barang ASC");
         krjgTableModel = new DefaultTableModel();
@@ -78,8 +85,9 @@ public class GuiMenuUtama extends javax.swing.JFrame {
             setTitle("Program Utama: Kasir (Barokah) [Administrator Access]");
             setDefaultCloseOperation(EXIT_ON_CLOSE);
         } else {
+            jFormattedTextField1.setColumns(3);
             jLabel1.setText(jLabel1.getText() + " " + java.time.LocalDateTime.now());
-            jTextField1.setEditable(false);
+            jFormattedTextField1.setEditable(false);
             ArrayList<String> ars = new ArrayList();
             try{
                 while(namaBarangResultSet.next()){
@@ -102,6 +110,7 @@ public class GuiMenuUtama extends javax.swing.JFrame {
             jTabbedPane1.setEnabledAt(1, false);
             jTabbedPane1.setEnabledAt(2, false);
             jButton8.setEnabled(false);
+            jButton9.setEnabled(false);
             setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         }
         try{
@@ -138,13 +147,21 @@ public class GuiMenuUtama extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
         jPanel5 = new javax.swing.JPanel();
         jButton7 = new javax.swing.JButton();
         jButton8 = new javax.swing.JButton();
         jButton9 = new javax.swing.JButton();
+        NumberFormat format = NumberFormat.getIntegerInstance();
+        NumberFormatter formatter = new NumberFormatter(format);
+        formatter.setValueClass(Integer.class);
+        formatter.setMinimum(1);
+        formatter.setMaximum(99);
+        formatter.setAllowsInvalid(false);
+        // If you want the value to be committed on each keystroke instead of focus lost
+        formatter.setCommitsOnValidEdit(true);
+        jFormattedTextField1 = new javax.swing.JFormattedTextField(formatter);
         jPanel2 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
@@ -210,13 +227,6 @@ public class GuiMenuUtama extends javax.swing.JFrame {
 
         jLabel6.setText("Jumlah");
 
-        jTextField1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jTextField1.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                jTextField1KeyPressed(evt);
-            }
-        });
-
         jLabel7.setText("Harga Total");
 
         jLabel8.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
@@ -240,6 +250,11 @@ public class GuiMenuUtama extends javax.swing.JFrame {
 
         jButton9.setBackground(new java.awt.Color(255, 102, 51));
         jButton9.setText("Bayar");
+        jButton9.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton9ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
@@ -265,6 +280,13 @@ public class GuiMenuUtama extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        jFormattedTextField1.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        jFormattedTextField1.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                jFormattedTextField1KeyPressed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -282,7 +304,7 @@ public class GuiMenuUtama extends javax.swing.JFrame {
                                         .addComponent(jLabel6)
                                         .addGap(163, 163, 163))
                                     .addGroup(jPanel1Layout.createSequentialGroup()
-                                        .addComponent(jTextField1)
+                                        .addComponent(jFormattedTextField1)
                                         .addGap(13, 13, 13)))
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel7)
@@ -318,10 +340,13 @@ public class GuiMenuUtama extends javax.swing.JFrame {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel6)
                             .addComponent(jLabel7))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel8)))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(12, 12, 12)
+                                .addComponent(jLabel8))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jFormattedTextField1))))
                     .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(20, Short.MAX_VALUE))
         );
@@ -548,8 +573,8 @@ public class GuiMenuUtama extends javax.swing.JFrame {
     private void jComboBox1ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBox1ItemStateChanged
         // TODO add your handling code here:
         if(evt.getStateChange() == ItemEvent.SELECTED){
-            if(jTextField1.isEditable()== false){
-                jTextField1.setEditable(true);
+            if(jFormattedTextField1.isEditable()== false){
+                jFormattedTextField1.setEditable(true);
             }
             int id_barang = jComboBox1.getSelectedIndex();
             System.out.println("id_barang : " + id_barang);
@@ -567,17 +592,6 @@ public class GuiMenuUtama extends javax.swing.JFrame {
                 System.out.println("Error: "+e.getMessage());
             }
             jLabel5.setText("Rp."+lblhrString);
-            try{
-                if(!jTextField1.getText().equals("")){
-                    int jml = Integer.valueOf(jTextField1.getText());
-                    jLabel8.setText("Rp." + (jml * Integer.valueOf(lblhrString))); 
-                } 
-            } catch (NumberFormatException e){
-                //jTextField1.setText("");
-                Toolkit.getDefaultToolkit().beep();
-            }
-            
-            
         }
     }//GEN-LAST:event_jComboBox1ItemStateChanged
 
@@ -597,49 +611,31 @@ public class GuiMenuUtama extends javax.swing.JFrame {
     }//GEN-LAST:event_jCheckBox1ItemStateChanged
 
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
-        // TODO add your handling code here:
-        /*try{
-            int jml = Integer.valueOf(jTextField1.getText());
-            if(jComboBox1.isPopupVisible() == true){
-                Toolkit.getDefaultToolkit().beep();
-            } else {
-                DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
-                model.addRow(new Object[]{jComboBox1.getSelectedIndex()+1, jComboBox1.getItemAt(jComboBox1.getSelectedIndex()),jml, jLabel8.getText().substring(3)});
-                jTable1.setModel(model);
-            }
-            
-        } catch (NumberFormatException e){
-            Toolkit.getDefaultToolkit();
-        }*/
         try{
             Object row[] = new Object[]{
                 jComboBox1.getSelectedIndex()+1,
                 jComboBox1.getSelectedItem(),
-                Integer.valueOf(jTextField1.getText()),
+                Integer.valueOf(jFormattedTextField1.getText()),
                 jLabel8.getText().substring(3)
             };
             krjgTableModel.addRow(row);
             jComboBox1.setSelectedIndex(0);
-            jTextField1.setText("");
-            jTextField1.setEditable(false);
+            jFormattedTextField1.setValue(null);
+            jFormattedTextField1.setEditable(false);
             jLabel5.setText("Rp.");
             jLabel8.setText("Rp.");
+            if(krjgTableModel.getRowCount() > 0){
+                jButton9.setEnabled(true);
+                int harga = 0;
+                for(int i = 0; i < krjgTableModel.getRowCount(); i++){
+                    harga = harga + Integer.parseInt(String.valueOf(krjgTableModel.getValueAt(i, 3)));
+                }
+                jButton9.setText("Bayar: Rp." + harga);
+            }
         } catch (NumberFormatException e){
             JOptionPane.showMessageDialog(null, "Pastikan data di dalam Kolom nama barang dan jumlah barang benar");
         }
     }//GEN-LAST:event_jButton7ActionPerformed
-
-    private void jTextField1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField1KeyPressed
-        char evchar = evt.getKeyChar();
-        if(!Character.isDigit(evchar) || evchar == KeyEvent.VK_BACK_SPACE || evchar == KeyEvent.VK_DELETE){
-            Toolkit.getDefaultToolkit().beep();
-            evt.consume();
-            ((javax.swing.JTextField)evt.getSource()).setText("");
-            jLabel8.setText("Rp.");
-        } else {
-            jLabel8.setText("Rp."+ (Integer.valueOf(((javax.swing.JTextField)evt.getSource()).getText() + evchar) * Integer.valueOf(jLabel5.getText().substring(3))));
-        }
-    }//GEN-LAST:event_jTextField1KeyPressed
 
     private void jTable3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable3MouseClicked
         // TODO add your handling code here:
@@ -655,8 +651,107 @@ public class GuiMenuUtama extends javax.swing.JFrame {
         if(check == JOptionPane.YES_OPTION){
             krjgTableModel.removeRow(jTable3.getSelectedRow());
             jButton8.setEnabled(false);
+            if(krjgTableModel.getRowCount() < 1){
+                jButton9.setText("Bayar");
+                jButton9.setEnabled(false);
+            } else if(krjgTableModel.getRowCount() > 0){
+                //jButton9.setEnabled(true);
+                int harga = 0;
+                for(int i = 0; i < krjgTableModel.getRowCount(); i++){
+                    harga = harga + Integer.parseInt(String.valueOf(krjgTableModel.getValueAt(i, 3)));
+                }
+                jButton9.setText("Bayar: Rp." + harga);
+            }
         }
     }//GEN-LAST:event_jButton8ActionPerformed
+
+    private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
+        // TODO add your handling code here:
+        int bayar = Integer.parseInt(jButton9.getText().substring(10));
+        int uang = 0, kembalian = 0;
+        boolean check = true;
+        boolean terbayar = false;
+        while(check){
+            try{
+                uang = Integer.parseInt(JOptionPane.showInputDialog("Masukan uang:"));
+                
+            } catch (NumberFormatException e){
+                check = false;
+            }
+            /**
+             * Proses Uang
+             */
+            if(uang > bayar){
+                kembalian = uang - bayar;
+                JOptionPane.showMessageDialog(null, "Kembalian:\nRp." + kembalian + "\nSilahkan mengambil kembalian", "Kembalian", JOptionPane.INFORMATION_MESSAGE);
+                check = false;
+                terbayar = true;
+            } else if(uang == bayar){
+                JOptionPane.showMessageDialog(null, "Uangnya Pas\n", "Info", JOptionPane.INFORMATION_MESSAGE);
+                check = false;
+                terbayar = true;
+            } else if(uang == 0){
+                check = false;
+            } else {
+                JOptionPane.showMessageDialog(null, "Uang yang dimasukan Kurang!", "Kurang!", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+        if(check == false && terbayar){
+            if(krjgTableModel.getRowCount() > 0){
+                int id_transaksi = 0;
+                ResultSet idtr = new KoneksiOracle().KoneksiOracleDB("Select id_transaksi from transaksi order by id_transaksi asc");
+                try{
+                    while(idtr.next()){
+                        id_transaksi = idtr.getInt(1);
+                    }
+                } catch (SQLException e){
+                    e.printStackTrace();
+                }
+                for(int i = krjgTableModel.getRowCount(); i > 0; i--){
+                    String[] isi = {
+                        String.valueOf(id_penjaga),
+                        String.valueOf(krjgTableModel.getValueAt(krjgTableModel.getRowCount()-1, 0)),
+                        String.valueOf(krjgTableModel.getValueAt(krjgTableModel.getRowCount()-1, 3)),
+                        String.valueOf(uang),
+                        String.valueOf(kembalian)
+                    };
+
+                    new KoneksiOracle().KoneksiOracleDBDenganIsi("INSERT INTO TRANSAKSI VALUES (" + (id_transaksi+1) + ", ?, ?, (select sysdate from dual), ?, ?, ?)", isi);
+                    krjgTableModel.removeRow(krjgTableModel.getRowCount()-1);
+                }
+            }
+            jButton9.setText("Bayar");
+            jButton9.setEnabled(false);
+        }
+    }//GEN-LAST:event_jButton9ActionPerformed
+
+    private void jFormattedTextField1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jFormattedTextField1KeyPressed
+        // TODO add your handling code here:
+        if(evt.getKeyCode() == KeyEvent.VK_BACK_SPACE || evt.getKeyCode() == KeyEvent.VK_DELETE){
+            getToolkit().beep();
+            jFormattedTextField1.setValue(null);
+            jLabel8.setText("Rp.");
+        } else {
+            //JOptionPane.showMessageDialog(null,"\""+ jFormattedTextField1.getValue() + "\"");
+            try{
+                if(jFormattedTextField1.getValue()==null){
+                    if(evt.getKeyChar() != '0'){
+                        jLabel8.setText("Rp."+ (Integer.valueOf(String.valueOf(evt.getKeyChar())) * Integer.valueOf(jLabel5.getText().substring(3))));
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Barang Tidak boleh 0!");
+                        jFormattedTextField1.setValue(null);
+                    }
+                } else {
+                    if(String.valueOf(jFormattedTextField1.getValue()).concat(String.valueOf(evt.getKeyChar())).length() < 3){
+                        jLabel8.setText("Rp."+ (Integer.valueOf(String.valueOf(jFormattedTextField1.getValue())+String.valueOf(evt.getKeyChar())) * Integer.valueOf(jLabel5.getText().substring(3))));
+                    } else {
+                    }
+                }
+            } catch (NumberFormatException e){
+                
+            }
+        }
+    }//GEN-LAST:event_jFormattedTextField1KeyPressed
     
     
     /**
@@ -693,6 +788,7 @@ public class GuiMenuUtama extends javax.swing.JFrame {
     private javax.swing.JButton jButton9;
     private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JComboBox<String> jComboBox1;
+    private javax.swing.JFormattedTextField jFormattedTextField1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -712,6 +808,5 @@ public class GuiMenuUtama extends javax.swing.JFrame {
     private javax.swing.JTable jTable1;
     private javax.swing.JTable jTable2;
     private javax.swing.JTable jTable3;
-    private javax.swing.JTextField jTextField1;
     // End of variables declaration//GEN-END:variables
 }

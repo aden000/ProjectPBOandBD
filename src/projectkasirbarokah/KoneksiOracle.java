@@ -19,7 +19,7 @@ public class KoneksiOracle {
             PreparedStatement a = conn.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             return a.executeQuery();
         } catch (SQLException e){
-            JOptionPane.showMessageDialog(null, "Error while processing SQL: " + e.getMessage());
+            JOptionPane.showMessageDialog(null, "Error while processing SQL: " + e.getLocalizedMessage());
             
         }
         return null;
@@ -40,7 +40,7 @@ public class KoneksiOracle {
             }
             return a.executeQuery();
         } catch (SQLException e){
-            JOptionPane.showMessageDialog(null, "Error while processing SQL: " + e.getMessage());
+            JOptionPane.showMessageDialog(null, "Error while processing SQL: " + e.getLocalizedMessage());
         }
         return null;
     }
