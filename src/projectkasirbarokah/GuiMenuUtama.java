@@ -59,7 +59,7 @@ public class GuiMenuUtama extends javax.swing.JFrame {
         jTable2.setEnabled(false);
         try{
             while(executedQuery.next()){
-                System.out.println("String: " + executedQuery.getString(1));
+                //System.out.println("String: " + executedQuery.getString(1));
                 jLabel2.setText(jLabel2.getText() +  " " + executedQuery.getString(1));
             }
         } catch (SQLException e){
@@ -82,7 +82,7 @@ public class GuiMenuUtama extends javax.swing.JFrame {
             }
             tc = jTable2.getColumnModel().getColumn(jTable2.getColumnCount()-1);
             jTable2.removeColumn(jTable2.getColumnModel().getColumn(jTable2.getColumnCount()-1));
-            setTitle("Program Utama: Kasir (Barokah) [Administrator Access]");
+            setTitle("Kasir Toko Barokah - [Administrator Access]");
             setDefaultCloseOperation(EXIT_ON_CLOSE);
         } else {
             jFormattedTextField1.setColumns(3);
@@ -111,6 +111,7 @@ public class GuiMenuUtama extends javax.swing.JFrame {
             jTabbedPane1.setEnabledAt(2, false);
             jButton8.setEnabled(false);
             jButton9.setEnabled(false);
+            setTitle("Kasir Toko Barokah - " + jLabel2.getText());
             setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         }
         try{
@@ -577,13 +578,13 @@ public class GuiMenuUtama extends javax.swing.JFrame {
                 jFormattedTextField1.setEditable(true);
             }
             int id_barang = jComboBox1.getSelectedIndex();
-            System.out.println("id_barang : " + id_barang);
+            //System.out.println("id_barang : " + id_barang);
             String lblhrString = "";
             brngResultSet = new KoneksiOracle().KoneksiOracleDB("SELECT * FROM BARANG ORDER BY ID_BARANG ASC");
             try{
                 while(brngResultSet.next()){
                     if(id_barang+1 == brngResultSet.getInt(1)){
-                        System.out.println("found it!");
+                        //System.out.println("found it!");
                         lblhrString = brngResultSet.getString(3);
                     }
                 }
@@ -673,8 +674,7 @@ public class GuiMenuUtama extends javax.swing.JFrame {
         boolean terbayar = false;
         while(check){
             try{
-                uang = Integer.parseInt(JOptionPane.showInputDialog("Masukan uang:"));
-                
+                uang = Integer.parseInt(JOptionPane.showInputDialog(null, "Masukan uang:"));                
             } catch (NumberFormatException e){
                 check = false;
             }
@@ -704,6 +704,7 @@ public class GuiMenuUtama extends javax.swing.JFrame {
                     while(idtr.next()){
                         id_transaksi = idtr.getInt(1);
                     }
+                    idtr.close();
                 } catch (SQLException e){
                     e.printStackTrace();
                 }
@@ -745,10 +746,11 @@ public class GuiMenuUtama extends javax.swing.JFrame {
                     if(String.valueOf(jFormattedTextField1.getValue()).concat(String.valueOf(evt.getKeyChar())).length() < 3){
                         jLabel8.setText("Rp."+ (Integer.valueOf(String.valueOf(jFormattedTextField1.getValue())+String.valueOf(evt.getKeyChar())) * Integer.valueOf(jLabel5.getText().substring(3))));
                     } else {
+                        getToolkit().beep();
                     }
                 }
             } catch (NumberFormatException e){
-                
+                getToolkit().beep();
             }
         }
     }//GEN-LAST:event_jFormattedTextField1KeyPressed

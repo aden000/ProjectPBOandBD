@@ -127,25 +127,29 @@ public class GuiTambahPegawai extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        String[] isi = {
-            jTextField1.getText(),
-            jTextField2.getText(),
-            String.valueOf(jPasswordField1.getPassword())
-        };
-        int id_penjaga = 0;
-        ResultSet rsgid = new KoneksiOracle().KoneksiOracleDB("Select id_penjaga from penjaga");
-        try{
-            while(rsgid.next()){
-                id_penjaga = rsgid.getInt(1);
+        if(jTextField1.getText().equalsIgnoreCase("") || jTextField2.getText().equalsIgnoreCase("") || String.valueOf(jPasswordField1.getPassword()).equalsIgnoreCase("")){
+            JOptionPane.showMessageDialog(null, "Tolong isi semua field yang ada", "Peringatan", JOptionPane.WARNING_MESSAGE);
+        } else {
+            String[] isi = {
+                jTextField1.getText(),
+                jTextField2.getText(),
+                String.valueOf(jPasswordField1.getPassword())
+            };
+            int id_penjaga = 0;
+            ResultSet rsgid = new KoneksiOracle().KoneksiOracleDB("Select id_penjaga from penjaga");
+            try{
+                while(rsgid.next()){
+                    id_penjaga = rsgid.getInt(1);
+                }
+            }catch (SQLException e){
+                JOptionPane.showMessageDialog(null, "Error while processing id_penjaga: " + e.getMessage() );
             }
-        }catch (SQLException e){
-            JOptionPane.showMessageDialog(null, "Error while processing id_penjaga: " + e.getMessage() );
+
+            new KoneksiOracle().KoneksiOracleDBDenganIsi("INSERT INTO PENJAGA VALUES (" + (id_penjaga+1) + ", ? , (select sysdate dt from dual) , null, ?, ?)", isi);
+            //        formsebelumnya.updateTable();
+            yolo.updateTablePenjaga();
+            dispose();
         }
-        
-        new KoneksiOracle().KoneksiOracleDBDenganIsi("INSERT INTO PENJAGA VALUES (" + (id_penjaga+1) + ", ? , (select sysdate dt from dual) , null, ?, ?)", isi);
-        //        formsebelumnya.updateTable();
-        yolo.updateTablePenjaga();
-        dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed

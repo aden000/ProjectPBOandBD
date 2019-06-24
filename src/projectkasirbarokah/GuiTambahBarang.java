@@ -127,22 +127,26 @@ public class GuiTambahBarang extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        String[] isi = {
-            jTextField1.getText(),
-            jTextField2.getText()
-        };
-        int id_barang = 0;
-        ResultSet rsgid = new KoneksiOracle().KoneksiOracleDB("Select * from barang order by id_barang asc");
-        try{
-            while(rsgid.next()){
-                id_barang = rsgid.getInt(1);
+        if(jTextField1.getText().equalsIgnoreCase("") || jTextField2.getText().equalsIgnoreCase("")){
+            JOptionPane.showMessageDialog(null, "Tolong isi semua field yang ada", "Peringatan", JOptionPane.WARNING_MESSAGE);
+        } else {
+            String[] isi = {
+                jTextField1.getText(),
+                jTextField2.getText()
+            };
+            int id_barang = 0;
+            ResultSet rsgid = new KoneksiOracle().KoneksiOracleDB("Select * from barang order by id_barang asc");
+            try{
+                while(rsgid.next()){
+                    id_barang = rsgid.getInt(1);
+                }
+            }catch (SQLException e){
+                JOptionPane.showMessageDialog(null, "Error while processing id_barang: " + e.getMessage() );
             }
-        }catch (SQLException e){
-            JOptionPane.showMessageDialog(null, "Error while processing id_barang: " + e.getMessage() );
+            new KoneksiOracle().KoneksiOracleDBDenganIsi("INSERT INTO BARANG VALUES (" + (id_barang+1) + ", ?, ?)", isi);
+            yolo.updateTableBarang();
+            dispose();
         }
-        new KoneksiOracle().KoneksiOracleDBDenganIsi("INSERT INTO BARANG VALUES (" + (id_barang+1) + ", ?, ?)", isi);
-        yolo.updateTableBarang();
-        dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
