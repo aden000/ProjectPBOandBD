@@ -5,8 +5,11 @@
         <group>
             <file>file:/E:/Ade/PBO/ProjectKasirBarokah/src/projectkasirbarokah/GuiMenuUtama.java</file>
             <file>file:/E:/Ade/PBO/ProjectKasirBarokah/src/projectkasirbarokah/KoneksiOracle.java</file>
+            <file>file:/E:/Ade/PBO/ProjectKasirBarokah/src/projectkasirbarokah/GuiUpdateBarang.java</file>
+            <file>file:/E:/Ade/PBO/ProjectKasirBarokah/src/projectkasirbarokah/GuiUpdatePegawai.java</file>
             <file>file:/E:/Ade/PBO/ProjectKasirBarokah/src/projectkasirbarokah/GuiTambahPegawai.java</file>
             <file>file:/E:/Ade/PBO/ProjectKasirBarokah/src/projectkasirbarokah/GuiTambahBarang.java</file>
+            <file>file:/E:/Ade/PBO/ProjectKasirBarokah/src/projectkasirbarokah/GuiLogin.java</file>
         </group>
     </open-files>
 </project-private>

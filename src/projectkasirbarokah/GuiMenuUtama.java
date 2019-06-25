@@ -6,6 +6,8 @@
 package projectkasirbarokah;
 
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.KeyEvent;
 import java.sql.ResultSet;
@@ -18,6 +20,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
+import javax.swing.Timer;
 import javax.swing.UIManager;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
@@ -45,6 +48,8 @@ public class GuiMenuUtama extends javax.swing.JFrame {
     //private static Object obj = new Object();
     public GuiMenuUtama(int id_penjaga) {
         initComponents();
+        setLocationRelativeTo(null);
+        setExtendedState(MAXIMIZED_BOTH);
         this.id_penjaga = id_penjaga;
         ResultSet executedQuery = new KoneksiOracle().KoneksiOracleDB("select nama_penjaga from penjaga where id_penjaga=" + id_penjaga);
         ResultSet namaBarangResultSet = new KoneksiOracle().KoneksiOracleDB("SELECT nama_barang FROM barang ORDER BY id_barang ASC");
@@ -86,9 +91,20 @@ public class GuiMenuUtama extends javax.swing.JFrame {
             setDefaultCloseOperation(EXIT_ON_CLOSE);
         } else {
             jFormattedTextField1.setColumns(3);
-            jLabel1.setText(jLabel1.getText() + " " + java.time.LocalDateTime.now());
             jFormattedTextField1.setEditable(false);
             ArrayList<String> ars = new ArrayList();
+            /*try{
+                Timer t = new Timer(1000, new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        jLabel1.setText("Tanggal Operasi: " + java.time.LocalDateTime.now());
+                    }
+                });
+                t.start();
+            } catch (Exception e){
+                e.printStackTrace();
+            }*/
+            
             try{
                 while(namaBarangResultSet.next()){
                     ars.add(namaBarangResultSet.getString(1));
@@ -125,6 +141,7 @@ public class GuiMenuUtama extends javax.swing.JFrame {
         
     }
 
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -322,12 +339,12 @@ public class GuiMenuUtama extends javax.swing.JFrame {
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 232, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(23, 23, 23)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 249, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -349,7 +366,7 @@ public class GuiMenuUtama extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jFormattedTextField1))))
                     .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(20, Short.MAX_VALUE))
+                .addGap(20, 20, 20))
         );
 
         jTabbedPane1.addTab("Kasir Utama", jPanel1);

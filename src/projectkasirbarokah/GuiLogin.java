@@ -23,6 +23,7 @@ public class GuiLogin extends javax.swing.JFrame {
     public GuiLogin() {
         initComponents();
         jTextField1.requestFocus();
+        setLocationRelativeTo(null);
     }
 
     /**
@@ -142,26 +143,33 @@ public class GuiLogin extends javax.swing.JFrame {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
         int id_penjaga = -1;
-            
-        ResultSet executedQuery = new KoneksiOracle().KoneksiOracleDB("SELECT username, password, id_penjaga FROM penjaga");
-        try{
-            while(executedQuery.next()){
-                if (executedQuery.getString(1).equals(jTextField1.getText()) && executedQuery.getString(2).equals(String.valueOf(jPasswordField1.getPassword()))) {
-                    id_penjaga = executedQuery.getInt(3);
-                    GuiMenuUtama gui = new GuiMenuUtama(id_penjaga);
-                    gui.MenuUtama(id_penjaga);
-                    dispose();
-                    break;
+        if(jTextField1.getText().equalsIgnoreCase("") || String.valueOf(jPasswordField1.getPassword()).equalsIgnoreCase("")){
+            JOptionPane.showMessageDialog(null, "Tolong di isi user dan password!");
+        } else {
+            ResultSet executedQuery = new KoneksiOracle().KoneksiOracleDB("SELECT username, password, id_penjaga, tanggal_keluar FROM penjaga");
+            try{
+                while(executedQuery.next()){
+                    if (executedQuery.getString(1).equals(jTextField1.getText()) && executedQuery.getString(2).equals(String.valueOf(jPasswordField1.getPassword()))) {
+                        if(executedQuery.getDate(4) == null){
+                            id_penjaga = executedQuery.getInt(3);
+                            GuiMenuUtama gui = new GuiMenuUtama(id_penjaga);
+                            gui.MenuUtama(id_penjaga);
+                            dispose();
+                            break;
+                        } else {
+                            id_penjaga = executedQuery.getInt(3);
+                            JOptionPane.showMessageDialog(null, "Anda sekarang bukan bagian dari toko ini!");
+                            break;
+                        }
+                    }
                 }
+                if(id_penjaga == -1){
+                    JOptionPane.showMessageDialog(null, "User tidak ditemukan atau password salah!");
+                }
+            } catch (SQLException e){
+                JOptionPane.showMessageDialog(null, "Error while processing data: " + e.getMessage());
             }
-            if(id_penjaga == -1){
-                JOptionPane.showMessageDialog(null, "User tidak ditemukan atau password salah!");
-            }
-        } catch (SQLException e){
-            JOptionPane.showMessageDialog(null, "Error while processing data: " + e.getMessage());
         }
-        
-        
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jPasswordField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jPasswordField1ActionPerformed

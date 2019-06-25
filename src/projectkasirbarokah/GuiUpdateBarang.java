@@ -29,6 +29,7 @@ public class GuiUpdateBarang extends javax.swing.JFrame {
     public GuiUpdateBarang(GuiMenuUtama yolo) {
         this.yolo = yolo;
         initComponents();
+        setLocationRelativeTo(null);
         jTextField1.setEnabled(false);
         jTextField2.setEnabled(false);
         jButton1.setEnabled(false);

@@ -28,10 +28,13 @@ public class GuiUpdatePegawai extends javax.swing.JFrame {
     public GuiUpdatePegawai(GuiMenuUtama gmu) {
         initComponents();
         this.gmu = gmu;
+        setLocationRelativeTo(null);
         jTextField1.setEnabled(false);
         jTextField2.setEnabled(false);
         jPasswordField1.setEnabled(false);
         jCheckBox1.setEnabled(false);
+        jButton2.setVisible(false);
+        jButton1.setEnabled(false);
         ArrayList<String> list = new ArrayList();
         try{
             pnjgResultSet.beforeFirst();
@@ -66,6 +69,7 @@ public class GuiUpdatePegawai extends javax.swing.JFrame {
         jCheckBox1 = new javax.swing.JCheckBox();
         jButton1 = new javax.swing.JButton();
         jPasswordField1 = new javax.swing.JPasswordField();
+        jButton2 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -107,6 +111,13 @@ public class GuiUpdatePegawai extends javax.swing.JFrame {
             }
         });
 
+        jButton2.setText("Pegawai ini masuk kembali jadi pegawai toko");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -118,7 +129,8 @@ public class GuiUpdatePegawai extends javax.swing.JFrame {
                     .addComponent(jTextField1, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jTextField2, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jButton2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
@@ -156,7 +168,9 @@ public class GuiUpdatePegawai extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jCheckBox1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
+                    .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -171,6 +185,7 @@ public class GuiUpdatePegawai extends javax.swing.JFrame {
             String nmString = "";
             String userString = "";
             String passString = "";
+            boolean resign = false;
             try{
                 pnjgResultSet.beforeFirst();
                 while(pnjgResultSet.next()){
@@ -179,6 +194,9 @@ public class GuiUpdatePegawai extends javax.swing.JFrame {
                         nmString = pnjgResultSet.getString(2);
                         userString = pnjgResultSet.getString(5);
                         passString = pnjgResultSet.getString(6);
+                        if(pnjgResultSet.getDate(4) != null){
+                            resign = true;
+                        }
                     }
                 }
             } catch (SQLException e){
@@ -191,7 +209,20 @@ public class GuiUpdatePegawai extends javax.swing.JFrame {
             jTextField2.setEnabled(true);
             jPasswordField1.setEnabled(true);
             jCheckBox1.setEnabled(true);
+            jCheckBox1.setSelected(false);
             jButton1.setEnabled(true);
+            jButton2.setVisible(false);
+            if(resign == true){
+                jButton2.setVisible(true);
+                jCheckBox1.setSelected(true);
+                jTextField1.setEnabled(false);
+                jTextField2.setEnabled(false);
+                jPasswordField1.setEnabled(false);
+                jCheckBox1.setEnabled(false);
+                jButton1.setEnabled(false);
+            } else {
+                
+            }
         }
     }//GEN-LAST:event_jComboBox1ItemStateChanged
 
@@ -238,6 +269,21 @@ public class GuiUpdatePegawai extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jCheckBox1ItemStateChanged
 
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+        int check = JOptionPane.showConfirmDialog(null, "Apakah anda yakin ingin mengaktifkan pegawai yang telah berstatus keluar?", "Konfirmasi", JOptionPane.OK_CANCEL_OPTION);
+        if(check == JOptionPane.YES_OPTION){
+            String konfirmasi = JOptionPane.showInputDialog(null, "Untuk Konfirmasi, Silahkan masukan NAMA penjaga yang terdaftar pada sistem lengkap dengan huruf kecil dan besar");
+            if(konfirmasi.equals(jComboBox1.getSelectedItem())){
+                new KoneksiOracle().KoneksiOracleDB("UPDATE penjaga SET tanggal_masuk = (select sysdate from dual), tanggal_keluar = null WHERE id_penjaga = " + (jComboBox1.getSelectedIndex()+1));
+                dispose();
+                gmu.updateTablePenjaga();
+            } else {
+                JOptionPane.showMessageDialog(null, "Inputan nama tidak sesuai!, Pengaktifan kembali dibatalkan!");
+            }
+        }
+    }//GEN-LAST:event_jButton2ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -256,6 +302,7 @@ public class GuiUpdatePegawai extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;

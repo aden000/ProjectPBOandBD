@@ -23,6 +23,7 @@ public class GuiTambahBarang extends javax.swing.JFrame {
     public GuiTambahBarang(GuiMenuUtama yolo) {
         initComponents();
         this.yolo = yolo;
+        setLocationRelativeTo(null);
     }
 
     /**

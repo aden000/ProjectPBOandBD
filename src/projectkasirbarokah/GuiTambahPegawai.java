@@ -24,6 +24,7 @@ public class GuiTambahPegawai extends javax.swing.JFrame {
     public GuiTambahPegawai(GuiMenuUtama yolo) {
         initComponents();
         this.yolo = yolo;
+        setLocationRelativeTo(null);
     }
 
     /**
