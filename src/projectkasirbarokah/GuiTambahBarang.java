@@ -43,6 +43,7 @@ public class GuiTambahBarang extends javax.swing.JFrame {
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
 
+        setTitle("Kasir Toko Barokah - Tambah Barang");
         setResizable(false);
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
@@ -84,14 +85,13 @@ public class GuiTambahBarang extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel2)
-                                .addGap(0, 0, Short.MAX_VALUE))
                             .addComponent(jTextField1)
+                            .addComponent(jTextField2)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel3)
-                                .addGap(0, 0, Short.MAX_VALUE))
-                            .addComponent(jTextField2))))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel2)
+                                    .addComponent(jLabel3))
+                                .addGap(0, 0, Short.MAX_VALUE)))))
                 .addContainerGap())
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
@@ -136,7 +136,7 @@ public class GuiTambahBarang extends javax.swing.JFrame {
                 jTextField2.getText()
             };
             int id_barang = 0;
-            ResultSet rsgid = new KoneksiOracle().KoneksiOracleDB("Select * from barang order by id_barang asc");
+            ResultSet rsgid = new Koneksi().KoneksiMariaDB("Select * from barang order by id_barang asc");
             try{
                 while(rsgid.next()){
                     id_barang = rsgid.getInt(1);
@@ -144,7 +144,7 @@ public class GuiTambahBarang extends javax.swing.JFrame {
             }catch (SQLException e){
                 JOptionPane.showMessageDialog(null, "Error while processing id_barang: " + e.getMessage() );
             }
-            new KoneksiOracle().KoneksiOracleDBDenganIsi("INSERT INTO BARANG VALUES (" + (id_barang+1) + ", ?, ?)", isi);
+            new Koneksi().KoneksiMariaDBDenganIsi("INSERT INTO BARANG VALUES (" + (id_barang+1) + ", ?, ?)", isi);
             yolo.updateTableBarang();
             dispose();
         }

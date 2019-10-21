@@ -24,7 +24,7 @@ public class GuiUpdatePegawai extends javax.swing.JFrame {
      */
     private GuiMenuUtama gmu;
     private boolean cekbox1 = false;
-    private ResultSet pnjgResultSet = new KoneksiOracle().KoneksiOracleDB("SELECT * FROM PENJAGA ORDER BY ID_PENJAGA ASC");
+    private ResultSet pnjgResultSet = new Koneksi().KoneksiMariaDB("SELECT * FROM PENJAGA ORDER BY ID_PENJAGA ASC");
     public GuiUpdatePegawai(GuiMenuUtama gmu) {
         initComponents();
         this.gmu = gmu;
@@ -72,6 +72,8 @@ public class GuiUpdatePegawai extends javax.swing.JFrame {
         jButton2 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Kasir Toko Barokah - Ubah Info Pegawai");
+        setResizable(false);
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel1.setText("Ubah Info Pegawai");
@@ -212,6 +214,9 @@ public class GuiUpdatePegawai extends javax.swing.JFrame {
             jCheckBox1.setSelected(false);
             jButton1.setEnabled(true);
             jButton2.setVisible(false);
+            if(jComboBox1.getSelectedIndex() == 0){
+                jCheckBox1.setEnabled(false);
+            }
             if(resign == true){
                 jButton2.setVisible(true);
                 jCheckBox1.setSelected(true);
@@ -220,9 +225,7 @@ public class GuiUpdatePegawai extends javax.swing.JFrame {
                 jPasswordField1.setEnabled(false);
                 jCheckBox1.setEnabled(false);
                 jButton1.setEnabled(false);
-            } else {
-                
-            }
+            } 
         }
     }//GEN-LAST:event_jComboBox1ItemStateChanged
 
@@ -238,9 +241,9 @@ public class GuiUpdatePegawai extends javax.swing.JFrame {
                 String.valueOf(jComboBox1.getSelectedIndex()+1)
             };
             if(!cekbox1){
-                new KoneksiOracle().KoneksiOracleDBDenganIsi("UPDATE PENJAGA SET nama_penjaga = ?, username = ?, password = ? WHERE ID_PENJAGA = ?", isi);
+                new Koneksi().KoneksiMariaDBDenganIsi("UPDATE PENJAGA SET nama_penjaga = ?, username = ?, password = ? WHERE ID_PENJAGA = ?", isi);
             } else {
-                new KoneksiOracle().KoneksiOracleDBDenganIsi("UPDATE PENJAGA SET tanggal_keluar = (select sysdate from dual) , nama_penjaga = ?, username = ?, password = ? WHERE ID_PENJAGA = ?", isi);
+                new Koneksi().KoneksiMariaDBDenganIsi("UPDATE PENJAGA SET tanggal_keluar = curdate() , nama_penjaga = ?, username = ?, password = ? WHERE ID_PENJAGA = ?", isi);
             }
             try{
                 pnjgResultSet.close();
@@ -275,7 +278,7 @@ public class GuiUpdatePegawai extends javax.swing.JFrame {
         if(check == JOptionPane.YES_OPTION){
             String konfirmasi = JOptionPane.showInputDialog(null, "Untuk Konfirmasi, Silahkan masukan NAMA penjaga yang terdaftar pada sistem lengkap dengan huruf kecil dan besar");
             if(konfirmasi.equals(jComboBox1.getSelectedItem())){
-                new KoneksiOracle().KoneksiOracleDB("UPDATE penjaga SET tanggal_masuk = (select sysdate from dual), tanggal_keluar = null WHERE id_penjaga = " + (jComboBox1.getSelectedIndex()+1));
+                new Koneksi().KoneksiMariaDB("UPDATE penjaga SET tanggal_masuk = curdate(), tanggal_keluar = null WHERE id_penjaga = " + (jComboBox1.getSelectedIndex()+1));
                 dispose();
                 gmu.updateTablePenjaga();
             } else {

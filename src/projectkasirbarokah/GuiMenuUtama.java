@@ -39,8 +39,8 @@ public class GuiMenuUtama extends javax.swing.JFrame {
      * @param id_penjaga
      */
     private int id_penjaga;
-    private ResultSet brngResultSet = new KoneksiOracle().KoneksiOracleDB("SELECT * FROM BARANG ORDER BY id_barang ASC");
-    private ResultSet pnjgResultSet = new KoneksiOracle().KoneksiOracleDB("SELECT * FROM PENJAGA ORDER BY id_penjaga ASC");
+    private ResultSet brngResultSet = new Koneksi().KoneksiMariaDB("SELECT * FROM BARANG ORDER BY id_barang ASC");
+    private ResultSet pnjgResultSet = new Koneksi().KoneksiMariaDB("SELECT * FROM PENJAGA ORDER BY id_penjaga ASC");
     private TableColumn tc;
     
     private DefaultTableModel krjgTableModel;
@@ -51,8 +51,8 @@ public class GuiMenuUtama extends javax.swing.JFrame {
         setLocationRelativeTo(null);
         setExtendedState(MAXIMIZED_BOTH);
         this.id_penjaga = id_penjaga;
-        ResultSet executedQuery = new KoneksiOracle().KoneksiOracleDB("select nama_penjaga from penjaga where id_penjaga=" + id_penjaga);
-        ResultSet namaBarangResultSet = new KoneksiOracle().KoneksiOracleDB("SELECT nama_barang FROM barang ORDER BY id_barang ASC");
+        ResultSet executedQuery = new Koneksi().KoneksiMariaDB("select nama_penjaga from penjaga where id_penjaga=" + id_penjaga);
+        ResultSet namaBarangResultSet = new Koneksi().KoneksiMariaDB("SELECT nama_barang FROM barang ORDER BY id_barang ASC");
         krjgTableModel = new DefaultTableModel();
         krjgTableModel.setColumnIdentifiers(new Object[]{
             "ID Barang",
@@ -87,24 +87,12 @@ public class GuiMenuUtama extends javax.swing.JFrame {
             }
             tc = jTable2.getColumnModel().getColumn(jTable2.getColumnCount()-1);
             jTable2.removeColumn(jTable2.getColumnModel().getColumn(jTable2.getColumnCount()-1));
-            setTitle("Kasir Toko Barokah - [Administrator Access]");
+            setTitle("Kasir Toko Barokah - " + jLabel2.getText() + " [Administrator Access]");
             setDefaultCloseOperation(EXIT_ON_CLOSE);
         } else {
             jFormattedTextField1.setColumns(3);
             jFormattedTextField1.setEditable(false);
             ArrayList<String> ars = new ArrayList();
-            /*try{
-                Timer t = new Timer(1000, new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        jLabel1.setText("Tanggal Operasi: " + java.time.LocalDateTime.now());
-                    }
-                });
-                t.start();
-            } catch (Exception e){
-                e.printStackTrace();
-            }*/
-            
             try{
                 while(namaBarangResultSet.next()){
                     ars.add(namaBarangResultSet.getString(1));
@@ -539,7 +527,7 @@ public class GuiMenuUtama extends javax.swing.JFrame {
 
     public void updateTableBarang(){
         //brngResultSet.refreshRow();
-        brngResultSet = new KoneksiOracle().KoneksiOracleDB("SELECT * FROM BARANG ORDER BY ID_BARANG ASC");
+        brngResultSet = new Koneksi().KoneksiMariaDB("SELECT * FROM BARANG ORDER BY ID_BARANG ASC");
         jTable1.setModel(DbUtils.resultSetToTableModel(brngResultSet));
         try {
             brngResultSet.close();
@@ -550,7 +538,7 @@ public class GuiMenuUtama extends javax.swing.JFrame {
     
     public void updateTablePenjaga(){
         //pnjgResultSet.updateRow();
-        pnjgResultSet = new KoneksiOracle().KoneksiOracleDB("SELECT * FROM PENJAGA ORDER BY ID_PENJAGA ASC");
+        pnjgResultSet = new Koneksi().KoneksiMariaDB("SELECT * FROM PENJAGA ORDER BY ID_PENJAGA ASC");
         jTable2.setModel(DbUtils.resultSetToTableModel(pnjgResultSet));
         if(jCheckBox1.isSelected() == false){
             jTable2.removeColumn(jTable2.getColumnModel().getColumn(jTable2.getColumnCount()-1));
@@ -597,15 +585,16 @@ public class GuiMenuUtama extends javax.swing.JFrame {
             int id_barang = jComboBox1.getSelectedIndex();
             //System.out.println("id_barang : " + id_barang);
             String lblhrString = "";
-            brngResultSet = new KoneksiOracle().KoneksiOracleDB("SELECT * FROM BARANG ORDER BY ID_BARANG ASC");
+            brngResultSet = new Koneksi().KoneksiMariaDB("SELECT ID_BARANG, HARGA_BARANG FROM BARANG ORDER BY ID_BARANG ASC");
             try{
+                brngResultSet.beforeFirst();
                 while(brngResultSet.next()){
                     if(id_barang+1 == brngResultSet.getInt(1)){
                         //System.out.println("found it!");
-                        lblhrString = brngResultSet.getString(3);
+                        lblhrString = brngResultSet.getString(2);
                     }
                 }
-                brngResultSet.close();
+                //brngResultSet.close();
             } catch (SQLException e){
                 System.out.println("Error: "+e.getMessage());
             }
@@ -716,7 +705,7 @@ public class GuiMenuUtama extends javax.swing.JFrame {
         if(check == false && terbayar){
             if(krjgTableModel.getRowCount() > 0){
                 int id_transaksi = 0;
-                ResultSet idtr = new KoneksiOracle().KoneksiOracleDB("Select id_transaksi from transaksi order by id_transaksi asc");
+                ResultSet idtr = new Koneksi().KoneksiMariaDB("Select id_transaksi from transaksi order by id_transaksi asc");
                 try{
                     while(idtr.next()){
                         id_transaksi = idtr.getInt(1);
@@ -734,7 +723,7 @@ public class GuiMenuUtama extends javax.swing.JFrame {
                         String.valueOf(kembalian)
                     };
 
-                    new KoneksiOracle().KoneksiOracleDBDenganIsi("INSERT INTO TRANSAKSI VALUES (" + (id_transaksi+1) + ", ?, ?, (select sysdate from dual), ?, ?, ?)", isi);
+                    new Koneksi().KoneksiMariaDBDenganIsi("INSERT INTO TRANSAKSI VALUES (" + (id_transaksi+1) + ", ?, ?, curdate(), ?, ?, ?)", isi);
                     krjgTableModel.removeRow(krjgTableModel.getRowCount()-1);
                 }
             }
@@ -749,6 +738,13 @@ public class GuiMenuUtama extends javax.swing.JFrame {
             getToolkit().beep();
             jFormattedTextField1.setValue(null);
             jLabel8.setText("Rp.");
+        } else if(evt.getKeyCode() == KeyEvent.VK_ENTER){
+            if(jFormattedTextField1.getValue()==null){
+                getToolkit().beep();
+            } else {
+                jButton7.doClick();
+                jComboBox1.requestFocus();
+            }
         } else {
             //JOptionPane.showMessageDialog(null,"\""+ jFormattedTextField1.getValue() + "\"");
             try{

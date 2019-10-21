@@ -25,7 +25,7 @@ public class GuiUpdateBarang extends javax.swing.JFrame {
      * Creates new form GuiUpdateBarang
      */
     private GuiMenuUtama yolo;
-    private ResultSet brngResultSet = new KoneksiOracle().KoneksiOracleDB("SELECT * FROM BARANG ORDER BY ID_BARANG ASC");
+    private ResultSet brngResultSet = new Koneksi().KoneksiMariaDB("SELECT * FROM BARANG ORDER BY ID_BARANG ASC");
     public GuiUpdateBarang(GuiMenuUtama yolo) {
         this.yolo = yolo;
         initComponents();
@@ -65,7 +65,9 @@ public class GuiUpdateBarang extends javax.swing.JFrame {
         jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Kasir Toko Barokah - Ubah Data Barang");
         setLocationByPlatform(true);
+        setResizable(false);
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel1.setText("Ubah Data Barang");
@@ -180,7 +182,7 @@ public class GuiUpdateBarang extends javax.swing.JFrame {
         System.out.println("id_barang = " + (jComboBox1.getSelectedIndex()+1));
         int pil = JOptionPane.showConfirmDialog(null, "Anda Yakin ingin mengubah? data ini?", "Ubah?", JOptionPane.YES_NO_OPTION);
         if(pil == JOptionPane.YES_OPTION){
-            new KoneksiOracle().KoneksiOracleDBDenganIsi("UPDATE barang SET nama_barang = ?, harga_barang = ? WHERE id_barang = " + (jComboBox1.getSelectedIndex()+1), isi);
+            new Koneksi().KoneksiMariaDBDenganIsi("UPDATE barang SET nama_barang = ?, harga_barang = ? WHERE id_barang = " + (jComboBox1.getSelectedIndex()+1), isi);
             try {
                 /*try{
                 brngResultSet.moveToInsertRow();

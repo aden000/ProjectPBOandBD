@@ -25,6 +25,10 @@ public class GuiTambahPegawai extends javax.swing.JFrame {
         initComponents();
         this.yolo = yolo;
         setLocationRelativeTo(null);
+        if(yolo == null){
+            setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+            jButton2.setEnabled(false);
+        }
     }
 
     /**
@@ -45,6 +49,9 @@ public class GuiTambahPegawai extends javax.swing.JFrame {
         jButton2 = new javax.swing.JButton();
         jLabel4 = new javax.swing.JLabel();
         jPasswordField1 = new javax.swing.JPasswordField();
+
+        setTitle("Kasir Toko Barokah - Tambah Pegawai");
+        setResizable(false);
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel1.setText("Tambah Pegawai");
@@ -137,7 +144,7 @@ public class GuiTambahPegawai extends javax.swing.JFrame {
                 String.valueOf(jPasswordField1.getPassword())
             };
             int id_penjaga = 0;
-            ResultSet rsgid = new KoneksiOracle().KoneksiOracleDB("Select id_penjaga from penjaga");
+            ResultSet rsgid = new Koneksi().KoneksiMariaDB("Select id_penjaga from penjaga");
             try{
                 while(rsgid.next()){
                     id_penjaga = rsgid.getInt(1);
@@ -146,9 +153,14 @@ public class GuiTambahPegawai extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(null, "Error while processing id_penjaga: " + e.getMessage() );
             }
 
-            new KoneksiOracle().KoneksiOracleDBDenganIsi("INSERT INTO PENJAGA VALUES (" + (id_penjaga+1) + ", ? , (select sysdate dt from dual) , null, ?, ?)", isi);
+            new Koneksi().KoneksiMariaDBDenganIsi("INSERT INTO PENJAGA VALUES (" + (id_penjaga+1) + ", ? , curdate() , null, ?, ?)", isi);
             //        formsebelumnya.updateTable();
-            yolo.updateTablePenjaga();
+            if(yolo != null){
+                yolo.updateTablePenjaga();
+            } else {
+                GuiLogin gl = new GuiLogin();
+                gl.ini();
+            }
             dispose();
         }
     }//GEN-LAST:event_jButton1ActionPerformed

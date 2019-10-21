@@ -24,6 +24,7 @@ public class GuiLogin extends javax.swing.JFrame {
         initComponents();
         jTextField1.requestFocus();
         setLocationRelativeTo(null);
+        setTitle("System Login: Kasir Toko Barokah");
     }
 
     /**
@@ -146,7 +147,7 @@ public class GuiLogin extends javax.swing.JFrame {
         if(jTextField1.getText().equalsIgnoreCase("") || String.valueOf(jPasswordField1.getPassword()).equalsIgnoreCase("")){
             JOptionPane.showMessageDialog(null, "Tolong di isi user dan password!");
         } else {
-            ResultSet executedQuery = new KoneksiOracle().KoneksiOracleDB("SELECT username, password, id_penjaga, tanggal_keluar FROM penjaga");
+            ResultSet executedQuery = new Koneksi().KoneksiMariaDB("SELECT username, password, id_penjaga, tanggal_keluar FROM penjaga");
             try{
                 while(executedQuery.next()){
                     if (executedQuery.getString(1).equals(jTextField1.getText()) && executedQuery.getString(2).equals(String.valueOf(jPasswordField1.getPassword()))) {

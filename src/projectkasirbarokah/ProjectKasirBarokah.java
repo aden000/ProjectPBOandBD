@@ -5,12 +5,16 @@
  */
 package projectkasirbarokah;
 
+import javax.swing.JOptionPane;
+
 public class ProjectKasirBarokah {
     public static void main(String[] args) throws ClassNotFoundException {
         /*MenuUtama init = new MenuUtama();
         init.MenuUtama();*/
         System.out.println("PROGRAM STARTED UP IN " + java.time.LocalDateTime.now());
-        GuiLogin gui = new GuiLogin();
-        gui.ini();
+        if(new Koneksi().CheckUserExist()){
+            GuiLogin gui = new GuiLogin();
+            gui.ini();
+        } 
     }
 }
