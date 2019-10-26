@@ -23,7 +23,6 @@ public class GuiUpdatePegawai extends javax.swing.JFrame {
      * Creates new form GuiUpdatePegawai
      */
     private GuiMenuUtama gmu;
-    private boolean cekbox1 = false;
     private ResultSet pnjgResultSet = new Koneksi().KoneksiMariaDB("SELECT * FROM PENJAGA ORDER BY ID_PENJAGA ASC");
     public GuiUpdatePegawai(GuiMenuUtama gmu) {
         initComponents();
@@ -32,8 +31,7 @@ public class GuiUpdatePegawai extends javax.swing.JFrame {
         jTextField1.setEnabled(false);
         jTextField2.setEnabled(false);
         jPasswordField1.setEnabled(false);
-        jCheckBox1.setEnabled(false);
-        jButton2.setVisible(false);
+        //jButton2.setEnabled(false);
         jButton1.setEnabled(false);
         ArrayList<String> list = new ArrayList();
         try{
@@ -66,10 +64,8 @@ public class GuiUpdatePegawai extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
         jTextField2 = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
-        jCheckBox1 = new javax.swing.JCheckBox();
         jButton1 = new javax.swing.JButton();
         jPasswordField1 = new javax.swing.JPasswordField();
-        jButton2 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Kasir Toko Barokah - Ubah Info Pegawai");
@@ -99,24 +95,10 @@ public class GuiUpdatePegawai extends javax.swing.JFrame {
 
         jLabel5.setText("Ubah password pegawai disini: (Jika tidak ingin mengubah password, abaikan)");
 
-        jCheckBox1.setText("Pegawai ini telah keluar dari toko (otomatis akan menambahkan tanggal keluar)");
-        jCheckBox1.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                jCheckBox1ItemStateChanged(evt);
-            }
-        });
-
         jButton1.setText("UBAH");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
-            }
-        });
-
-        jButton2.setText("Pegawai ini masuk kembali jadi pegawai toko");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
             }
         });
 
@@ -131,18 +113,16 @@ public class GuiUpdatePegawai extends javax.swing.JFrame {
                     .addComponent(jTextField1, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jTextField2, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jButton2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(jCheckBox1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jPasswordField1, javax.swing.GroupLayout.Alignment.LEADING))
+                            .addComponent(jPasswordField1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 403, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -167,12 +147,8 @@ public class GuiUpdatePegawai extends javax.swing.JFrame {
                 .addComponent(jLabel5)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPasswordField1, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jCheckBox1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
-                    .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(37, 37, 37)
+                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -187,18 +163,14 @@ public class GuiUpdatePegawai extends javax.swing.JFrame {
             String nmString = "";
             String userString = "";
             String passString = "";
-            boolean resign = false;
             try{
                 pnjgResultSet.beforeFirst();
                 while(pnjgResultSet.next()){
                     if(id_barang+1 == pnjgResultSet.getInt(1)){
                         System.out.println("found it!");
                         nmString = pnjgResultSet.getString(2);
-                        userString = pnjgResultSet.getString(5);
-                        passString = pnjgResultSet.getString(6);
-                        if(pnjgResultSet.getDate(4) != null){
-                            resign = true;
-                        }
+                        userString = pnjgResultSet.getString(3);
+                        passString = pnjgResultSet.getString(4);
                     }
                 }
             } catch (SQLException e){
@@ -210,22 +182,8 @@ public class GuiUpdatePegawai extends javax.swing.JFrame {
             jTextField1.setEnabled(true);
             jTextField2.setEnabled(true);
             jPasswordField1.setEnabled(true);
-            jCheckBox1.setEnabled(true);
-            jCheckBox1.setSelected(false);
             jButton1.setEnabled(true);
-            jButton2.setVisible(false);
-            if(jComboBox1.getSelectedIndex() == 0){
-                jCheckBox1.setEnabled(false);
-            }
-            if(resign == true){
-                jButton2.setVisible(true);
-                jCheckBox1.setSelected(true);
-                jTextField1.setEnabled(false);
-                jTextField2.setEnabled(false);
-                jPasswordField1.setEnabled(false);
-                jCheckBox1.setEnabled(false);
-                jButton1.setEnabled(false);
-            } 
+            //jButton2.setEnabled(true); 
         }
     }//GEN-LAST:event_jComboBox1ItemStateChanged
 
@@ -240,11 +198,7 @@ public class GuiUpdatePegawai extends javax.swing.JFrame {
                 String.valueOf(jPasswordField1.getPassword()),
                 String.valueOf(jComboBox1.getSelectedIndex()+1)
             };
-            if(!cekbox1){
-                new Koneksi().KoneksiMariaDBDenganIsi("UPDATE PENJAGA SET nama_penjaga = ?, username = ?, password = ? WHERE ID_PENJAGA = ?", isi);
-            } else {
-                new Koneksi().KoneksiMariaDBDenganIsi("UPDATE PENJAGA SET tanggal_keluar = curdate() , nama_penjaga = ?, username = ?, password = ? WHERE ID_PENJAGA = ?", isi);
-            }
+            new Koneksi().KoneksiMariaDBDenganIsi("UPDATE PENJAGA SET nama_penjaga = ?, username = ?, password = ? WHERE ID_PENJAGA = ?", isi);
             try{
                 pnjgResultSet.close();
             } catch (SQLException e){
@@ -256,36 +210,6 @@ public class GuiUpdatePegawai extends javax.swing.JFrame {
             this.setEnabled(true);
         }
     }//GEN-LAST:event_jButton1ActionPerformed
-
-    private void jCheckBox1ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jCheckBox1ItemStateChanged
-        // TODO add your handling code here:
-        if(evt.getStateChange() == ItemEvent.SELECTED){
-            cekbox1 = true;
-            jTextField1.setEnabled(false);
-            jTextField2.setEnabled(false);
-            jPasswordField1.setEnabled(false);
-        } else {
-            cekbox1 = false;
-            jTextField1.setEnabled(true);
-            jTextField2.setEnabled(true);
-            jPasswordField1.setEnabled(true);
-        }
-    }//GEN-LAST:event_jCheckBox1ItemStateChanged
-
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
-        int check = JOptionPane.showConfirmDialog(null, "Apakah anda yakin ingin mengaktifkan pegawai yang telah berstatus keluar?", "Konfirmasi", JOptionPane.OK_CANCEL_OPTION);
-        if(check == JOptionPane.YES_OPTION){
-            String konfirmasi = JOptionPane.showInputDialog(null, "Untuk Konfirmasi, Silahkan masukan NAMA penjaga yang terdaftar pada sistem lengkap dengan huruf kecil dan besar");
-            if(konfirmasi.equals(jComboBox1.getSelectedItem())){
-                new Koneksi().KoneksiMariaDB("UPDATE penjaga SET tanggal_masuk = curdate(), tanggal_keluar = null WHERE id_penjaga = " + (jComboBox1.getSelectedIndex()+1));
-                dispose();
-                gmu.updateTablePenjaga();
-            } else {
-                JOptionPane.showMessageDialog(null, "Inputan nama tidak sesuai!, Pengaktifan kembali dibatalkan!");
-            }
-        }
-    }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -305,8 +229,6 @@ public class GuiUpdatePegawai extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;

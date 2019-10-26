@@ -147,21 +147,15 @@ public class GuiLogin extends javax.swing.JFrame {
         if(jTextField1.getText().equalsIgnoreCase("") || String.valueOf(jPasswordField1.getPassword()).equalsIgnoreCase("")){
             JOptionPane.showMessageDialog(null, "Tolong di isi user dan password!");
         } else {
-            ResultSet executedQuery = new Koneksi().KoneksiMariaDB("SELECT username, password, id_penjaga, tanggal_keluar FROM penjaga");
+            ResultSet executedQuery = new Koneksi().KoneksiMariaDB("SELECT username, password, id_penjaga FROM penjaga");
             try{
                 while(executedQuery.next()){
                     if (executedQuery.getString(1).equals(jTextField1.getText()) && executedQuery.getString(2).equals(String.valueOf(jPasswordField1.getPassword()))) {
-                        if(executedQuery.getDate(4) == null){
-                            id_penjaga = executedQuery.getInt(3);
-                            GuiMenuUtama gui = new GuiMenuUtama(id_penjaga);
-                            gui.MenuUtama(id_penjaga);
-                            dispose();
-                            break;
-                        } else {
-                            id_penjaga = executedQuery.getInt(3);
-                            JOptionPane.showMessageDialog(null, "Anda sekarang bukan bagian dari toko ini!");
-                            break;
-                        }
+                        id_penjaga = executedQuery.getInt(3);
+                        GuiMenuUtama gui = new GuiMenuUtama(id_penjaga);
+                        gui.MenuUtama(id_penjaga);
+                        dispose();
+                        break;
                     }
                 }
                 if(id_penjaga == -1){

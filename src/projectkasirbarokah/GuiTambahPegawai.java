@@ -153,7 +153,7 @@ public class GuiTambahPegawai extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(null, "Error while processing id_penjaga: " + e.getMessage() );
             }
 
-            new Koneksi().KoneksiMariaDBDenganIsi("INSERT INTO PENJAGA VALUES (" + (id_penjaga+1) + ", ? , curdate() , null, ?, ?)", isi);
+            new Koneksi().KoneksiMariaDBDenganIsi("INSERT INTO PENJAGA VALUES (" + (id_penjaga+1) + ", ? , ?, ?)", isi);
             //        formsebelumnya.updateTable();
             if(yolo != null){
                 yolo.updateTablePenjaga();
